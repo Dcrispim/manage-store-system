@@ -8,23 +8,26 @@ if (localStorage.getItem('compra')) {
     localStorage.setItem('compra', 'aberta')
 
 }
-let client = document.getElementById('id_client')
-let date = document.getElementById('id_date')
-let mode = document.getElementById('id_mode')
-let status = document.getElementById('id_status')
+let client = document.getElementById('client')
+let date = document.getElementById('date')
+let mode = document.getElementById('mode')
+let status = document.getElementById('status')
 let cart = []
 let ItemDoCaixa = null
 let prod = document.getElementById('product')
 let qtd = document.getElementById('qtd')
 let total = 0
 let totalop = document.getElementById('totalop')
+let totalopOff = document.getElementById('totalopOff')
 let inputCart = document.getElementById('input_cart')
 let form = document.getElementById('main_form')
 let errors = []
-setCart()
-setDateField(document.getElementById('id_date'))
-recoveryLostCar()
+let priceField = document.getElementById('sale_price')
+let off = document.getElementById('off')
 
+setCart()
+recoveryLostCar()
+setPriceField()
 function tamanho() {
     var x = document.body.scrollWidth || document.body.offsetWidth;
     var y = document.body.scrollHeight || document.body.offsetHeight;
@@ -90,8 +93,6 @@ function recoveryLostCar(){
 
 }
 
-
-
 function setCart() {
     if (localStorage.getItem('cart') != null && localStorage.getItem('cart').length > 0) {
         let dbCart = localStorage.getItem('cart')
@@ -116,7 +117,7 @@ function updateCartinput(){
             )
         )
     )
-    console.log(selectCart)
+
     jsonCart = JSON.stringify(selectCart).substring(1, JSON.stringify(selectCart).length - 1)
 
     inputCart.value = jsonCart
@@ -131,22 +132,31 @@ function sendCartToLocalStorage() {
     localStorage.setItem('cart', jsonCart)
 }
 
-function setDateField(element){
-    let = element.type = 'date'
+function setPriceField(){
+    if (mode.value == 1){
+        priceField.style.visibility = 'visible'
+        priceField.setAttribute('required',true)
+        initPrice = ItemDoCaixa[2] | ''
+        priceField.value = initPrice
+    } else if (mode.value == 0){
+        priceField.style.visibility = 'hidden'
+    }
 }
-
-
-
 
 function addCart() {
     let qtd = parseFloat(document.getElementById('qtd').value)
     if (ItemDoCaixa != null && qtd > 0) {
-        cart.push({ product: ItemDoCaixa, qtd })
+        
+        if(mode.value==1){
+            price = parseFloat(priceField.value)
+            cart.push({product:[ItemDoCaixa[0],ItemDoCaixa[1], price], qtd})
+        }else{
+            cart.push({ product: ItemDoCaixa, qtd})
+        }
         renderRows()
         sendCartToLocalStorage()
         clearPesq()
         ItemDoCaixa = null
-
 
     }
     setTotalOp()
@@ -154,17 +164,17 @@ function addCart() {
 }
 
 function addToRegister(item) {
-
-    prod.value = item
-    console.log(item)
+    prod.value = item[1]
     ItemDoCaixa = item
+    setPriceField()
 }
 
 function setTotalOp() {
-    console.log(total)
     totalop.innerHTML = ''
-    totalop.innerText = `R$ ${total} `
-    console.log(total)
+    totalopOff.innerHTML = ''
+    desc = (parseFloat(off.value)|0)/100
+    totalop.innerText = `R$ ${total.toFixed(2)} `
+    totalopOff.innerText = `R$ ${(total*(1-desc)).toFixed(2)} `
 }
 
 function removeCartItem(id) {
@@ -175,28 +185,33 @@ function removeCartItem(id) {
 
 function renderRows() {
     total=0
-    var tableCart = document.getElementById('cart')
+    let tableCart = document.getElementById('cart')
     tableCart.innerHTML = "<tr><th>Produto</th><th>QTD</th><th>ACT</th></tr>"
     for (let i = 0; i < cart.length; i++) {
-        tableCart.innerHTML += `<tr> <td>${cart[i].product[1]}</td><td>(${cart[i].qtd})x R$ ${cart[i].product[2]}</td><td><a class="btn btn-danger" onClick="removeCartItem(${i})"><i class="fa fa-trash-o"></i></a></td></tr>`
+        let colProd = ` <td>${cart[i].product[1]}</td>`
+        let colQtdPrice = `<td>(${cart[i].qtd})x R$ ${cart[i].product[2]}</td>`
+        let colAct = `<td><a class="btn btn-danger" onClick="removeCartItem(${i})"><i class="fa fa-trash-o"></i></a></td>`
+        tableCart.innerHTML += `<tr>${colProd}${colQtdPrice}${colAct}</tr>`
         total += (cart[i].product[2] * cart[i].qtd)
 
 
     }
-    console.log(total)
-
     setTotalOp()
     saveLostCart()
     updateCartinput()
     getErrors()
 }
+function search(){
+    let search = document.getElementById('search_form')
+    search.submit()
+}
 
 function formSubmit(){
     localStorage.removeItem('cart')
-    localStorage.removeItem('id_mode')
-    localStorage.removeItem('id_client')
-    localStorage.removeItem('id_date')
-    localStorage.removeItem('id_status')
+    localStorage.removeItem('mode')
+    localStorage.removeItem('client')
+    localStorage.removeItem('date')
+    localStorage.removeItem('status')
     localStorage.setItem('compra','fechada')
     if(cart.length>0){
         form.submit()
@@ -204,3 +219,4 @@ function formSubmit(){
         alert('CARRINHO VAZIO')
     }
 }
+mode.addEventListener('change', ()=>setPriceField())
