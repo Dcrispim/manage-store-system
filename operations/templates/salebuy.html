@@ -3,9 +3,271 @@
 {% load bootstrap %}
 
 {% block 'title' %}
-    Sale or Buy
+Sale or Buy
 {% endblock 'title' %}
 
 {% block 'content' %}
-    <script src="{% static 'salebuy.js' %}"></script>
+<link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
+<div class="row ml-2 mt-2 pr-3">
+  <div id="left-pane" class="col-sm-12 col-md-6 ">
+    <div id="search_field" class="">
+      <div>
+        <div class="row">
+          <input id="product" name="product" placeholder="Nome do produto" type="text" class="form-control col-10 mb-2">
+          <input id="qtd" placeholder="qtd" type="number" class="form-control col-2 mb-2">
+        </div>
+        <div class="row">
+          <a class="btn btn-info mb-2 mr-2"><i class="fa fa-search"></i></a>
+          <a class="btn btn-success mb-2 mr-2"><i class="fa fa-cart-plus"></i></a>
+          <a class="btn btn-warning mb-2 mr-2"><i class="fa fa-plus"></i></a>
+        </div>
+
+      </div>
+    </div>
+    <div class="row scroll1">
+      <table class="table table-striped">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">Produto</th>
+            <th scope="col">Qtd/R$</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Mark</td>
+            <td>(50)xR$150</td>
+          </tr>
+          <tr>
+            <td>Jacob</td>
+            <td>(50)xR$150</td>
+          </tr>
+          <tr>
+            <td>Larry</td>
+            <td>(50)xR$150</td>
+          </tr>
+          <tr>
+            <td>Mark</td>
+            <td>(50)xR$150</td>
+          </tr>
+          <tr>
+            <td>Jacob</td>
+            <td>(50)xR$150</td>
+          </tr>
+          <tr>
+            <td>Larry</td>
+            <td>(50)xR$150</td>
+          </tr>
+          <tr>
+            <td>Mark</td>
+            <td>(50)xR$150</td>
+          </tr>
+          <tr>
+            <td>Jacob</td>
+            <td>(50)xR$150</td>
+          </tr>
+          <tr>
+            <td>Larry</td>
+            <td>(50)xR$150</td>
+          </tr>
+          <tr>
+            <td>Mark</td>
+            <td>(50)xR$150</td>
+          </tr>
+          <tr>
+            <td>Jacob</td>
+            <td>(50)xR$150</td>
+          </tr>
+          <tr>
+            <td>Larry</td>
+            <td>(50)xR$150</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div id="rigth-pane" class="col-sm-12 col-md-6">
+    <form method="POST">
+      <div id="info_client" class="col-sm-12">
+
+        {% csrf_token %}
+        <div class="row mb-2">
+          <select class="custom-select col-10 col-md-11" id="client" name="client">
+            {% for item in form.client %}
+            <option value="{{item}}"></option>
+            {% endfor %}
+          </select>
+          <div class="col-2 col-md-1"><a class="btn btn-warning"> <i class="fa fa-user-plus"></i></a></div>
+        </div>
+        <div class="row">
+          <input id="date" name="date" type="date" class="form-control col-6 col-md-4 pr-2 mb-2">
+          <select class="custom-select col-6 col-md-3 mb-2" id="mode" name="mode">
+            <option value="0">VENDA</option>
+            <option value="1">COMPRA</option>
+          </select>
+
+          <select class="custom-select col-12 col-md-3" id="status" name="status">
+            <option value="0">PENDENTE</option>
+            <option value="1">OK</option>
+            <option value="2">CANCELADO</option>
+          </select>
+
+
+        </div>
+
+
+      </div>
+      <div id="list_cart" class="row pl-3 pr-3 mt-2 scroll1">
+        <table class="table table-striped">
+          <thead class="thead-dark">
+            <tr>
+              <th scope="col">Produto</th>
+              <th scope="col">Qtd/R$</th>
+              <th scope="col">Act</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Mark</td>
+              <td>(50)xR$150</td>
+              <td><a class="btn btn-danger"><i class="fa fa-trash-o"></i></a></td>
+            </tr>
+            <tr>
+              <td>Jacob</td>
+              <td>(50)xR$150</td>
+              <td><a class="btn btn-danger"><i class="fa fa-trash-o"></i></a></td>
+            </tr>
+            <tr>
+              <td>Larry</td>
+              <td>(50)xR$150</td>
+              <td><a class="btn btn-danger"><i class="fa fa-trash-o"></i></a></td>
+            </tr>
+            <tr>
+              <td>Mark</td>
+              <td>(50)xR$150</td>
+              <td><a class="btn btn-danger"><i class="fa fa-trash-o"></i></a></td>
+            </tr>
+            <tr>
+              <td>Jacob</td>
+              <td>(50)xR$150</td>
+              <td><a class="btn btn-danger"><i class="fa fa-trash-o"></i></a></td>
+            </tr>
+            <tr>
+              <td>Larry</td>
+              <td>(50)xR$150</td>
+              <td><a class="btn btn-danger"><i class="fa fa-trash-o"></i></a></td>
+            </tr>
+            <tr>
+              <td>Mark</td>
+              <td>(50)xR$150</td>
+              <td><a class="btn btn-danger"><i class="fa fa-trash-o"></i></a></td>
+            </tr>
+            <tr>
+              <td>Jacob</td>
+              <td>(50)xR$150</td>
+              <td><a class="btn btn-danger"><i class="fa fa-trash-o"></i></a></td>
+            </tr>
+            <tr>
+              <td>Larry</td>
+              <td>(50)xR$150</td>
+              <td><a class="btn btn-danger"><i class="fa fa-trash-o"></i></a></td>
+            </tr>
+            <tr>
+              <td>Mark</td>
+              <td>(50)xR$150</td>
+              <td><a class="btn btn-danger"><i class="fa fa-trash-o"></i></a></td>
+            </tr>
+            <tr>
+              <td>Jacob</td>
+              <td>(50)xR$150</td>
+              <td><a class="btn btn-danger"><i class="fa fa-trash-o"></i></a></td>
+            </tr>
+            <tr>
+              <td>Larry</td>
+              <td>(50)xR$150</td>
+              <td><a class="btn btn-danger"><i class="fa fa-trash-o"></i></a></td>
+            </tr>
+            <tr>
+              <td>Mark</td>
+              <td>(50)xR$150</td>
+              <td><a class="btn btn-danger"><i class="fa fa-trash-o"></i></a></td>
+            </tr>
+            <tr>
+              <td>Jacob</td>
+              <td>(50)xR$150</td>
+              <td><a class="btn btn-danger"><i class="fa fa-trash-o"></i></a></td>
+            </tr>
+            <tr>
+              <td>Larry</td>
+              <td>(50)xR$150</td>
+              <td><a class="btn btn-danger"><i class="fa fa-trash-o"></i></a></td>
+            </tr>
+            <tr>
+              <td>Mark</td>
+              <td>(50)xR$150</td>
+              <td><a class="btn btn-danger"><i class="fa fa-trash-o"></i></a></td>
+            </tr>
+            <tr>
+              <td>Jacob</td>
+              <td>(50)xR$150</td>
+              <td><a class="btn btn-danger"><i class="fa fa-trash-o"></i></a></td>
+            </tr>
+            <tr>
+              <td>Larry</td>
+              <td>(50)xR$150</td>
+              <td><a class="btn btn-danger"><i class="fa fa-trash-o"></i></a></td>
+            </tr>
+            <tr>
+              <td>Mark</td>
+              <td>(50)xR$150</td>
+              <td><a class="btn btn-danger"><i class="fa fa-trash-o"></i></a></td>
+            </tr>
+            <tr>
+              <td>Jacob</td>
+              <td>(50)xR$150</td>
+              <td><a class="btn btn-danger"><i class="fa fa-trash-o"></i></a></td>
+            </tr>
+            <tr>
+              <td>Larry</td>
+              <td>(50)xR$150</td>
+              <td><a class="btn btn-danger"><i class="fa fa-trash-o"></i></a></td>
+            </tr>
+            <tr>
+              <td>Mark</td>
+              <td>(50)xR$150</td>
+              <td><a class="btn btn-danger"><i class="fa fa-trash-o"></i></a></td>
+            </tr>
+            <tr>
+              <td>Jacob</td>
+              <td>(50)xR$150</td>
+              <td><a class="btn btn-danger"><i class="fa fa-trash-o"></i></a></td>
+            </tr>
+            <tr>
+              <td>Larry</td>
+              <td>(50)xR$150</td>
+              <td><a class="btn btn-danger"><i class="fa fa-trash-o"></i></a></td>
+            </tr>
+          </tbody>
+        </table>
+        <input id="input_cart" name="input_cart" class="invisible" readOnly=true></input>
+      </div>
+      <div id="menu_close" class="row  ml-1 mr-2">
+        <div class="mt-2 mr-1">
+          <button type="submit" class="btn btn-success"><i class="fa fa-shopping-cart"></i></button>
+          <button class="btn btn-danger"><i class="fa fa-times"></i></button>
+        </div>
+        <div class="col-7 col-md-4 mt-2">
+          <h3>R$ 1500,00</h3>
+        </div>
+        <div class="mt-2 mr-4">
+          <input id="off" type="number" placeholder="Desc">
+        </div>
+        <div class="col-7 col-md-4 mt-2">
+          <h3>R$ 1550,00</h3>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!--<script src="{% static 'salebuy.js' %}"></script>-->
 {% endblock 'content' %}

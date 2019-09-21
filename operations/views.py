@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 
-from api.models import SalesOrBuy, Stock, Product, Client, CartItem
+from .models import SalesOrBuy, Stock, Product, Client, CartItem
 from .forms import SalesOrBuyForm
 
 import json
@@ -65,12 +65,13 @@ def salebuy(request):
                 stock_list.append(sti)
         except IndexError:
             pass
-
+    print(form.is_valid())
+    print(request.POST)
     if form.is_valid():
         
         try:
             if len(errors)==0:
-                opid = form.save()
+                #opid = form.save()
                 if form['mode'].value() == '0':
                     addVenda()
                 elif form['mode'].value() == '1':
@@ -78,6 +79,8 @@ def salebuy(request):
                    
         except Exception as erro:
            errors.append(erro)
+        
+        
             
     if errors:
         print(errors, 'ERROS')

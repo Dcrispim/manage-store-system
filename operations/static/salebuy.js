@@ -8,7 +8,6 @@ if (localStorage.getItem('compra')) {
     localStorage.setItem('compra', 'aberta')
 
 }
-
 let client = document.getElementById('id_client')
 let date = document.getElementById('id_date')
 let mode = document.getElementById('id_mode')
@@ -26,6 +25,11 @@ setCart()
 setDateField(document.getElementById('id_date'))
 recoveryLostCar()
 
+function tamanho() {
+    var x = document.body.scrollWidth || document.body.offsetWidth;
+    var y = document.body.scrollHeight || document.body.offsetHeight;
+    return { w: x, h: y };
+}
 
 function getErrors(){
     let divErrors = document.getElementById('div-errors').innerHTML
