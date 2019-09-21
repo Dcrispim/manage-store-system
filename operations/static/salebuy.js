@@ -24,6 +24,8 @@ let form = document.getElementById('main_form')
 let errors = []
 let priceField = document.getElementById('sale_price')
 let off = document.getElementById('off')
+let H = tamanho().h
+let W = tamanho().w
 
 setCart()
 recoveryLostCar()
@@ -172,9 +174,9 @@ function addToRegister(item) {
 function setTotalOp() {
     totalop.innerHTML = ''
     totalopOff.innerHTML = ''
-    desc = (parseFloat(off.value)|0)/100
+    desc = parseFloat(off.value)/100 || 0
     totalop.innerText = `R$ ${total.toFixed(2)} `
-    totalopOff.innerText = `R$ ${(total*(1-desc)).toFixed(2)} `
+    totalopOff.innerText = `R$ ${((total*(1-desc))).toFixed(2)} `
 }
 
 function removeCartItem(id) {
@@ -201,6 +203,26 @@ function renderRows() {
     updateCartinput()
     getErrors()
 }
+
+function openPopUp(route, w=300, h=200, data=[]){
+    
+    let left = (tamanho().w/2)
+    let top = (tamanho().h/2)
+    let param = ''
+    for (let p = 0; p < data.length; p++) {
+        const element = data[p];
+        
+        if(element.length>=2 && element[1].length>0){
+            param += `${element[0]}=${element[1]}`
+        }
+        if(p!= data.length-1){
+            param+='&'
+        } 
+    }
+
+    window.open(`${route}${param.length>0? '?'+param :``}`, "MsgWindow", `width=${w},height=${h},left=${left},top=${top}`)
+}
+
 function search(){
     let search = document.getElementById('search_form')
     search.submit()
@@ -214,7 +236,10 @@ function formSubmit(){
     localStorage.removeItem('status')
     localStorage.setItem('compra','fechada')
     if(cart.length>0){
-        form.submit()
+        let ok = confirm('Deseja Finalizar a compra')
+        if(ok==true){
+            form.submit()
+        }
     }else{
         alert('CARRINHO VAZIO')
     }
