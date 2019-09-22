@@ -21,7 +21,7 @@ let total = 0
 let totalop = document.getElementById('totalop')
 let totalopOff = document.getElementById('totalopOff')
 let inputCart = document.getElementById('input_cart')
-let form = document.getElementById('main_form')
+let form = document.getElementById('form-sale-buy')
 let errors = []
 let priceField = document.getElementById('sale_price')
 let off = document.getElementById('off')
@@ -233,7 +233,7 @@ function openPopUp(route, w=300, h=200, data=[]){
     DivpopUpWindow.style.visibility = 'visible'
     popUpWindow.style.boxShadow = '2px 2px 8px';
     DivpopUpWindow.style.top = top+'px'
-    DivpopUpWindow.style.left = left+'px'
+    DivpopUpWindow.style.left = (left-(w/2))+'px'
     popUpWindow.style.width = w +'px' 
     popUpWindow.style.height = h+'px'
     popUpWindow.style.border = '0px';

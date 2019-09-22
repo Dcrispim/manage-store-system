@@ -109,7 +109,8 @@ def salebuy(request):
             except IndexError as err:
                 errors.append(err)
     setList()
-
+    print(form.is_valid())
+    print(request.POST)
     if form.is_valid():
         try:
             if len(errors) == 0:

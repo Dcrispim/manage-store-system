@@ -14,7 +14,7 @@
   <body>
       <div class="container">
       
-          <form method="POST">
+          <form id ="form-add-client" method="POST">
           {% csrf_token %}
                   <input name="name" onkeyup="this.value = this.value.toUpperCase();" class="form-control" type="text" placeholder="Nome do Cliente">
                   <input name="email" onkeyup="this.value = this.value.toUpperCase();" class="form-control" type="text" placeholder="Email">
@@ -22,7 +22,7 @@
                   <input name="address" onkeyup="this.value = this.value.toUpperCase();" class="form-control" type="text" placeholder="Endereço">
                   <input name="birth" onkeyup="this.value = this.value.toUpperCase();" class="form-control" type="date" placeholder="Nascimento">
                   <div class="container mt-2">
-                    <button type="submit" class="btn btn-warning"><i class="fa fa-save"></i></button>
+                    <button type="button" onClick="formSubmit()" class="btn btn-warning"><i class="fa fa-save"></i></button>
                     <button type="button" onClick="closePopUp()" class="btn btn-danger"><i class="fa fa-times"></i></button>
 
                   </div>

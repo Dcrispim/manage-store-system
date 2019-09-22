@@ -67,18 +67,14 @@ Sale or Buy
     </div>
   </div>
   <div id="rigth-pane" class="col-sm-12 col-md-6">
-    <form id="main_form" method="POST">
+    <form id="form-sale-buy" method="POST">
       <div id="info_client" class="col-sm-12">
 
         {% csrf_token %}
         <div class="row mb-2">
           <select class="custom-select col-10 col-md-11" id="client" name="client">
             {% for item in form.client %}
-<<<<<<< HEAD
-                {{item}}
-=======
-            <option value="{{item}}"></option>
->>>>>>> frontend
+              {{item}}
             {% endfor %}
           </select>
           <div class="col-2 col-md-1"><a id="btn_add-client" class="btn btn-warning"><i class="fa fa-user-plus"></i></a>
