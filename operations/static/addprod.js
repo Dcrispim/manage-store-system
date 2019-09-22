@@ -1,5 +1,7 @@
+let Parent = window.parent
 let product = document.getElementById('prod_name')
-let form = document.getElementById('main_form')
+
+let pesc = window.parent.document.getElementById('product').value
 
 function getParam(){
     let query = location.search.slice(1);
@@ -15,11 +17,12 @@ function getParam(){
     return data
 }
 
-function submitForm() {
-    setTimeout(()=>window.close(), 3000);
-    form.submit()
-   
-    
+function closePopUp(){
+    window.parent.document.getElementById('div-popup').style.visibility='hidden'
 }
 
-window.addEventListener('onloadstart', product.value=getParam().prod_name.toUpperCase())
+window.addEventListener('load', ()=>{
+    product.value=pesc.toUpperCase()
+    console.log(Parent.document.getElementById('product').value)
+})
+

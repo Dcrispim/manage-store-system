@@ -16,19 +16,17 @@ Sale or Buy
   <div id="left-pane" class="col-sm-12 col-md-6 ">
     <div id="search_field" class="">
       <form id="search_form" method="GET">
-          <div class="row">
-            <input id="product" name="product" placeholder="Nome do produto" type="text"
-              class="form-control col-10 mb-2">
-            <input id="qtd" placeholder="qtd" type="number" class="form-control col-2 mb-2">
-          </div>
-          <div class="row">
-            <button class="btn btn-info mb-2 mr-2" onClick="search()"><i class="fa fa-search"></i></button>
-            <a class="btn btn-success mb-2 mr-2" onClick="addCart()"><i class="fa fa-cart-plus"></i></a>
-            <a class="btn btn-warning mb-2 mr-2" 
-              onClick="openPopUp('/addprod', 300,170, data=[['prod_name',document.getElementById('product').value]])">
-              <i class="fa fa-plus"></i></a>
-            <input id="sale_price"class="form-control col-4" name="sale_price" type="number" placeholder="R$"/>
-          </div>
+        <div class="row">
+          <input id="product" name="product" placeholder="Nome do produto" type="text" class="form-control col-10 mb-2">
+          <input id="qtd" placeholder="qtd" type="number" class="form-control col-2 mb-2">
+        </div>
+        <div class="row">
+          <button class="btn btn-info mb-2 mr-2" onClick="search()"><i class="fa fa-search"></i></button>
+          <a class="btn btn-success mb-2 mr-2" onClick="addCart()"><i class="fa fa-cart-plus"></i></a>
+          <a id="btn_add-prod" class="btn btn-warning mb-2 mr-2">
+            <i class="fa fa-plus"></i></a>
+          <input id="sale_price" class="form-control col-4" name="sale_price" type="number" placeholder="R$" />
+        </div>
       </form>
     </div>
     <div class="row scroll1">
@@ -42,27 +40,23 @@ Sale or Buy
         <tbody>
           {% for item in stock %}
           <tr>
-            <td 
-            id="{{item.pk}}" 
-            onClick="addToRegister([{{item.product.pk}},'{{item}}', {{item.sale_price}}])">
+            <td id="{{item.pk}}" onClick="addToRegister([{{item.product.pk}},'{{item}}', {{item.sale_price}}])">
               {{item.product}}
             </td>
             <td>
               {% if item.qtd > 0 %}
-                ({{item.qtd}})x R${{item.sale_price}}
+              ({{item.qtd}})x R${{item.sale_price}}
               {% else %}
-                (SE)
+              (SE)
               {% endif %}
-              
+
             </td>
           </tr>
           {% endfor %}
 
           {% for item in products %}
           <tr>
-            <td 
-            id="P{{item.pk}}" 
-            onClick="addToRegister(['P{{item.pk}}','{{item}}', 0])">
+            <td id="P{{item.pk}}" onClick="addToRegister(['P{{item.pk}}','{{item}}', 0])">
               {{item.name}}
             </td>
             <td>(SC)</td>
@@ -78,12 +72,17 @@ Sale or Buy
 
         {% csrf_token %}
         <div class="row mb-2">
-            <select class="custom-select col-10 col-md-11" id="client" name="client">
+          <select class="custom-select col-10 col-md-11" id="client" name="client">
             {% for item in form.client %}
+<<<<<<< HEAD
                 {{item}}
+=======
+            <option value="{{item}}"></option>
+>>>>>>> frontend
             {% endfor %}
           </select>
-          <div class="col-2 col-md-1"><a class="btn btn-warning" onClick="openPopUp('/addclient',300,300)"><i class="fa fa-user-plus"></i></a></div>
+          <div class="col-2 col-md-1"><a id="btn_add-client" class="btn btn-warning"><i class="fa fa-user-plus"></i></a>
+          </div>
         </div>
         <div class="row">
           <input id="date" name="date" type="date" class="form-control col-6 col-md-4 pr-2 mb-2">
@@ -124,7 +123,8 @@ Sale or Buy
       </div>
       <div id="menu_close" class="row  ml-1 mr-2">
         <div class="mt-2 mr-1">
-          <button type="button" onClick="formSubmit()" class="btn btn-success"><i class="fa fa-shopping-cart"></i></button>
+          <button type="button" onClick="formSubmit()" class="btn btn-success"><i
+              class="fa fa-shopping-cart"></i></button>
           <button class="btn btn-danger"><i class="fa fa-times"></i></button>
         </div>
         <div class="col-7 col-md-4 mt-2">
@@ -139,6 +139,10 @@ Sale or Buy
       </div>
     </form>
   </div>
+</div>
+
+<div id="div-popup" class='row '>
+    <iframe id="iframe-popup" class=" bg-light pt-3 rounded-lg"></iframe>
 </div>
 {% endblock 'content' %}
 
