@@ -4,7 +4,8 @@ if (localStorage.getItem('compra')) {
         localStorage.setItem('cart', [])
     }
 
-} else {
+} 
+else {
     localStorage.setItem('compra', 'aberta')
 
 }
@@ -30,6 +31,7 @@ let W = tamanho().w
 setCart()
 recoveryLostCar()
 setPriceField()
+
 function tamanho() {
     var x = document.body.scrollWidth || document.body.offsetWidth;
     var y = document.body.scrollHeight || document.body.offsetHeight;
@@ -115,7 +117,7 @@ function setCart() {
 function updateCartinput(){
     let selectCart = [] 
     cart.map(item => (
-        selectCart.push({"product": item.product[0], "qtd": item.qtd}
+        selectCart.push({"product": item.product[0], "qtd": item.qtd, "price":item.product[2]}
             )
         )
     )

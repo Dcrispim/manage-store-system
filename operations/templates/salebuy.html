@@ -80,7 +80,7 @@ Sale or Buy
         <div class="row mb-2">
             <select class="custom-select col-10 col-md-11" id="client" name="client">
             {% for item in form.client %}
-                <option value="{{item}}"></option>
+                {{item}}
             {% endfor %}
           </select>
           <div class="col-2 col-md-1"><a class="btn btn-warning" onClick="openPopUp('/addclient',300,300)"><i class="fa fa-user-plus"></i></a></div>
@@ -143,5 +143,5 @@ Sale or Buy
 {% endblock 'content' %}
 
 {% block 'scripts' %}
-<script src="{% static 'salebuy.js' %}"></script>
+  <script src="{% static 'salebuy.js' %}"></script>
 {% endblock 'scripts' %}

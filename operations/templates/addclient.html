@@ -13,7 +13,9 @@
   </head>
   <body>
       <div class="container">
-          <form action="POST">
+      
+          <form method="POST">
+          {% csrf_token %}
                   <input name="name" onkeyup="this.value = this.value.toUpperCase();" class="form-control" type="text" placeholder="Nome do Cliente">
                   <input name="email" onkeyup="this.value = this.value.toUpperCase();" class="form-control" type="text" placeholder="Email">
                   <input name="cell" onkeyup="this.value = this.value.toUpperCase();" class="form-control" type="text" placeholder="Telefone (xx)9xxxx-xxxx">
