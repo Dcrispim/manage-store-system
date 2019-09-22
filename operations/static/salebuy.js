@@ -24,6 +24,10 @@ let form = document.getElementById('main_form')
 let errors = []
 let priceField = document.getElementById('sale_price')
 let off = document.getElementById('off')
+let AddClient
+let AddProd
+let BtnAddProd = document.getElementById('btn_add-prod')
+let BtnAddClient = document.getElementById('btn_add-Client')
 let H = tamanho().h
 let W = tamanho().w
 
@@ -220,7 +224,7 @@ function openPopUp(route, w=300, h=200, data=[]){
         } 
     }
 
-    window.open(`${route}${param.length>0? '?'+param :``}`, "MsgWindow", `width=${w},height=${h},left=${left},top=${top}`)
+    return window.open(`${route}${param.length>0? '?'+param :``}`, "MsgWindow", `width=${w},height=${h},left=${left},top=${top}`)
 }
 
 function search(){
@@ -245,3 +249,16 @@ function formSubmit(){
     }
 }
 mode.addEventListener('change', ()=>setPriceField())
+window.addEventListener('load', ()=>{
+    console.log('OLA');
+    
+    AddClient = openPopUp('/addclient',300,300)
+    AddProd = openPopUp('/addprod', 300,170, data=[['prod_name',document.getElementById('product').value]])
+   
+    BtnAddProd.onclick = AddProd
+    BtnAddClient.onclick = AddClient
+
+    AddClient.addEventListener('close', ()=>(console.log('Fechado')))
+   
+
+} )

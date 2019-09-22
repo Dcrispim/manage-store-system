@@ -24,7 +24,7 @@ Sale or Buy
           <div class="row">
             <button class="btn btn-info mb-2 mr-2" onClick="search()"><i class="fa fa-search"></i></button>
             <a class="btn btn-success mb-2 mr-2" onClick="addCart()"><i class="fa fa-cart-plus"></i></a>
-            <a class="btn btn-warning mb-2 mr-2" 
+            <a id="btn_add-prod" class="btn btn-warning mb-2 mr-2" 
               onClick="openPopUp('/addprod', 300,170, data=[['prod_name',document.getElementById('product').value]])">
               <i class="fa fa-plus"></i></a>
             <input id="sale_price"class="form-control col-4" name="sale_price" type="number" placeholder="R$"/>
@@ -83,7 +83,7 @@ Sale or Buy
                 <option value="{{item}}"></option>
             {% endfor %}
           </select>
-          <div class="col-2 col-md-1"><a class="btn btn-warning" onClick="openPopUp('/addclient',300,300)"><i class="fa fa-user-plus"></i></a></div>
+          <div class="col-2 col-md-1"><a id="btn_add-client" class="btn btn-warning" onClick="openPopUp('/addclient',300,300)"><i class="fa fa-user-plus"></i></a></div>
         </div>
         <div class="row">
           <input id="date" name="date" type="date" class="form-control col-6 col-md-4 pr-2 mb-2">
