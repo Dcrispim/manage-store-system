@@ -27,9 +27,13 @@ let off = document.getElementById('off')
 let AddClient
 let AddProd
 let BtnAddProd = document.getElementById('btn_add-prod')
-let BtnAddClient = document.getElementById('btn_add-Client')
+let BtnAddClient = document.getElementById('btn_add-client')
+let popUpWindow = document.getElementById('iframe-popup')
+var DivpopUpWindow = document.getElementById('div-popup')
+
 let H = tamanho().h
 let W = tamanho().w
+
 
 setCart()
 recoveryLostCar()
@@ -223,9 +227,19 @@ function openPopUp(route, w=300, h=200, data=[]){
             param+='&'
         } 
     }
-
-    return window.open(`${route}${param.length>0? '?'+param :``}`, "MsgWindow", `width=${w},height=${h},left=${left},top=${top}`)
+    let URL = `${route}${param.length>0? '?'+param :``}`
+    DivpopUpWindow.style.visibility = 'visible'
+    popUpWindow.style.boxShadow = '2px 2px 8px';
+    DivpopUpWindow.style.top = top+'px'
+    DivpopUpWindow.style.left = left+'px'
+    popUpWindow.style.width = w +'px' 
+    popUpWindow.style.height = h+'px'
+    popUpWindow.style.border = '0px';
+    
+    popUpWindow.setAttribute('src', URL)
 }
+
+
 
 function search(){
     let search = document.getElementById('search_form')
@@ -248,17 +262,29 @@ function formSubmit(){
         alert('CARRINHO VAZIO')
     }
 }
+function getParam(){
+    let query = location.search.slice(1);
+    let partes = query.split('&');
+    let data = {};
+    partes.forEach(parte => {
+        let chaveValor = parte.split('=');
+        let chave = chaveValor[0];
+        let valor = chaveValor[1];
+        data[chave] = valor;
+    }); 
+    console.log(data)
+    return data
+}
+
+
 mode.addEventListener('change', ()=>setPriceField())
 window.addEventListener('load', ()=>{
-    console.log('OLA');
-    
-    AddClient = openPopUp('/addclient',300,300)
-    AddProd = openPopUp('/addprod', 300,170, data=[['prod_name',document.getElementById('product').value]])
-   
-    BtnAddProd.onclick = AddProd
-    BtnAddClient.onclick = AddClient
+    DivpopUpWindow.style.visibility = 'hidden'
+    DivpopUpWindow.style.position = 'absolute'
+    DivpopUpWindow.style.zIndex = 100
 
-    AddClient.addEventListener('close', ()=>(console.log('Fechado')))
-   
+    BtnAddProd.setAttribute('onClick', "openPopUp('/addprod', 300,170, data=[['prod_name',document.getElementById('product').value]])")
+    BtnAddClient.setAttribute('onClick', "openPopUp('/addclient',300,300)")
+
 
 } )
