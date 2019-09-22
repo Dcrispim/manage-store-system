@@ -6,6 +6,7 @@ from .forms import SalesOrBuyForm, ClientForm, ProductForm
 
 import json
 from utils.parse import strToArrayObj
+from utils.validate import prefixID as idValid
 
 
 # Create your views here.
@@ -19,7 +20,6 @@ def salebuy(request):
     form = SalesOrBuyForm(request.POST or None, )
     input_cart = request.POST.get('input_cart' or None)
     list_prod = []
-    stock = Stock.objects.all()
     stock_list = []
     if input_cart and len(strToArrayObj(input_cart)[1]) == 0:
         list_cartitems = strToArrayObj(input_cart)[0]
@@ -33,13 +33,12 @@ def salebuy(request):
                                  status=item['status'], date=item['date'],
                                  )
 
-    def addCartItem(item, OPID):
-        if str(item['product'])[0].upper() == 'P':
-            ID = Product.objects.get(pk=int(item['product'][1:]))
-        else:
-            ID = Product.objects.get(pk=item['product'])
+    def addCartItem(i, OPID):
+        pkId = int(idValid(i['product'], 'P')) if idValid(
+            i['product'], 'P') else i['product']
+        ID = Product.objects.get(pk=pkId)
         IDSB = SalesOrBuy.objects.get(pk=OPID)
-        CartItem.objects.create(product=ID, qtd=item['qtd'], opid=IDSB)
+        CartItem.objects.create(product=ID, qtd=i['qtd'], opid=IDSB)
 
     def updateStock(id, qtd):
         Stock.objects.filter(pk=id).update(qtd=qtd)
@@ -47,23 +46,20 @@ def salebuy(request):
     def addCompra(opId):
         total = 0
         for item in list_cartitems:
-            new_prod = False
-            if str(item['product'])[0].upper() == 'P':
-                new_prod = True
-                product_item = Product.objects.get(pk=int(item['product'][1:]))
-            else:
-                product_item = item['product']
+            pkId = int(idValid(item['product'], 'P')) if idValid(
+                item['product'], 'P') else item['product']
+            product_item = Product.objects.get(pk=pkId)
 
-            if new_prod:
+            if idValid(item['product'], 'P'):
                 try:
                     Stock.objects.create(
                         product=product_item, qtd=item['qtd'], sale_price=item['price'])
-                    total = total + item['qtd']*item['price']
+                    total = total + item['qtd'] * item['price']
                 except IntegrityError:
                     stockItem = Stock.objects.filter(product=product_item)[0]
                     qtd = stockItem.qtd+item['qtd']
                     updateStock(stockItem.id, qtd)
-                    total = total + item['qtd']*stockItem.sale_price
+                    total = total + item['qtd'] * stockItem.sale_price
             else:
                 stockItem = Stock.objects.filter(product=product_item)[0]
                 qtd = stockItem.qtd+item['qtd']
@@ -88,9 +84,12 @@ def salebuy(request):
 
     def setList():
         __UNIQUE_CTRL_LIST__ = []
+        stock = Stock.objects.all()
         lp = Product.objects.all()
+
         list_prod.clear
         stock_list.clear
+
         if pesquisa != None:
             terms = pesquisa.split()
             lista = lp.filter(name__icontains=pesquisa)
@@ -109,8 +108,7 @@ def salebuy(request):
             except IndexError as err:
                 errors.append(err)
     setList()
-    print(form.is_valid())
-    print(request.POST)
+    
     if form.is_valid():
         try:
             if len(errors) == 0:
@@ -118,8 +116,8 @@ def salebuy(request):
                 if form['mode'].value() == '0':
                     total = addVenda(opid)
                     addOperation({'description': f'IDV{ opid.pk }',
-                                  'orig_dest': f'{opid.client}', 'credit': total, 'debt': 0 , 'status': opid.status, 'date': opid.date})
-    
+                                  'orig_dest': f'{opid.client}', 'credit': total, 'debt': 0, 'status': opid.status, 'date': opid.date})
+
                 elif form['mode'].value() == '1':
                     total = addCompra(opid)
                     addOperation({'description': f'IDC{ opid.pk }',
@@ -127,9 +125,8 @@ def salebuy(request):
                 setList()
 
         except KeyError as erro:
-            print('ERRO', erro)
             errors.append(erro)
-
+    print(request.POST.get('input_cart'))
     data = {
         'form': form,
         'stock': stock_list,
@@ -141,7 +138,6 @@ def salebuy(request):
 def addClient(request):
     form = ClientForm(request.POST or None)
 
-    print(form.is_valid())
     if form.is_valid():
         form.save()
         return render(request, 'close.html')
