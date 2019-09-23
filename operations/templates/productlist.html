@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block 'links' %}
+{% endblock 'links' %}
+
+
+{% block 'scripts' %}
+<script src="{% static 'salebuy.js' %}"></script>
+{% endblock 'scripts' %}
+
+
+{% block 'content' %}
+    <div id="div-errors" class="invisible"></div>
+    <div class="row ml-2 mt-2 pr-3">
+        <div id="left-pane" class="col-sm-12 col-md-6 ">
+            <div id="search_field" class="">
+                <form id="search_form" method="GET">
+                    <div class="row">
+                        <input id="product" name="product" placeholder="Nome do produto" type="text"
+                            class="form-control col-10 mb-2">
+                        <input id="qtd" placeholder="qtd" type="number" class="form-control col-2 mb-2">
+                    </div>
+                    <div class="row">
+                        <button class="btn btn-info mb-2 mr-2" onClick="search()"><i class="fa fa-search"></i></button>
+                        <a class="btn btn-success mb-2 mr-2" onClick="addCart()"><i class="fa fa-cart-plus"></i></a>
+                        <a id="btn_add-prod" class="btn btn-warning mb-2 mr-2">
+                            <i class="fa fa-plus"></i></a>
+                        <input id="sale_price" class="form-control col-4" name="sale_price" type="number"
+                            placeholder="R$" />
+                    </div>
+                </form>
+            </div>
+            <div class="row scroll1">
+                <table class="table table-striped">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">Produto</th>
+                            <th scope="col">Qtd/R$</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in stock %}
+                        <tr>
+                            <td id="{{item.pk}}"
+                                onClick="addToRegister([{{item.product.pk}},'{{item}}', {{item.sale_price}}])">
+                                {{item.product}}
+                            </td>
+                            <td>
+                                {% if item.qtd > 0 %}
+                                ({{item.qtd}})x R${{item.sale_price}}
+                                {% else %}
+                                (SE)
+                                {% endif %}
+
+                            </td>
+                        </tr>
+                        {% endfor %}
+
+                        {% for item in products %}
+                        <tr>
+                            <td id="P{{item.pk}}" onClick="addToRegister(['P{{item.pk}}','{{item}}', 0])">
+                                {{item.name}}
+                            </td>
+                            <td>(SC)</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="div-popup" class='row '>
+        <iframe id="iframe-popup" class=" bg-light pt-3 rounded-lg"></iframe>
+    </div>
+{% endblock 'content' %}

@@ -7,6 +7,7 @@ from .forms import SalesOrBuyForm, ClientForm, ProductForm
 import json
 from utils.parse import strToArrayObj
 from utils.validate import prefixID as idValid
+from .func import setProductStockList
 
 
 # Create your views here.
@@ -83,32 +84,15 @@ def salebuy(request):
         return total
 
     def setList():
-        __UNIQUE_CTRL_LIST__ = []
-        stock = Stock.objects.all()
-        lp = Product.objects.all()
-
-        list_prod.clear
-        stock_list.clear
-
-        if pesquisa != None:
-            terms = pesquisa.split()
-            lista = lp.filter(name__icontains=pesquisa)
+        lp = setProductStockList(Stock,Product,pesquisa)
+        if len(lp['errors'])==0:
+            list_prod = lp['product']
+            stock_list = lp['stock']
         else:
-            lista = lp
-
-        for prod in lista:
-            try:
-                sti = stock.filter(product__exact=prod.pk)
-                if sti and sti[0] not in stock_list and sti[0].product.name not in __UNIQUE_CTRL_LIST__:
-                    stock_list.append(sti[0])
-                    __UNIQUE_CTRL_LIST__.append(sti[0].product.name)
-                elif prod not in list_prod and prod.name not in __UNIQUE_CTRL_LIST__:
-                    list_prod.append(prod)
-                    __UNIQUE_CTRL_LIST__.append(prod.name)
-            except IndexError as err:
-                errors.append(err)
+            errors.extend(lp['errors'])
+        
     setList()
-    
+
     if form.is_valid():
         try:
             if len(errors) == 0:
@@ -159,3 +143,24 @@ def addProduct(request):
         'form': form
     }
     return render(request, 'addprod.html')
+
+def service(request):
+    list_prod  = []
+    stock_list = []
+    def setList():
+        pesquisa = request.GET.get('product' or None)
+        lp = setProductStockList(Stock,Product,pesquisa)
+        if len(lp['errors'])==0:
+            list_prod = lp['product']
+            stock_list = lp['stock']
+        else:
+            errors.extend(lp['errors'])
+        
+    setList()
+
+    data = {
+        'stock': stock_list,
+        'products': list_prod
+    }
+    return render(request, 'service.html', data)
+
