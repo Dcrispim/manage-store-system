@@ -23,28 +23,28 @@ Serviços
         status
         date  
     -->
-<div class="row">
-    <div id="left-pane" class="col-sm-12 col-md-6 ">
+<div class="row pl-1">
+    <div id="left-pane" class="col-sm-12 col-md-5 mt-2 ">
         <div id="search_field" class="">
-            <form id="search_form" method="GET">
+            <form id="search_form" class="ml-3" method="GET">
                 <div class="row">
                     <input id="product" name="product" placeholder="Nome do produto" type="text"
-                        class="form-control col-10 mb-2">
-                    <input id="qtd" placeholder="qtd" type="number" class="form-control col-2 mb-2">
+                        class="form-control col-8 col-md-9 mb-2 mr-1">
+                    <input id="qtd" placeholder="qtd" type="number" class="form-control col-3 col-md-2 mb-2">
                 </div>
                 <div class="row">
                     <button class="btn btn-info mb-2 mr-2" onClick="search()"><i class="fa fa-search"></i></button>
                     <a class="btn btn-success mb-2 mr-2" onClick="addCart()"><i class="fa fa-cart-plus"></i></a>
                     <a id="btn_add-prod" class="btn btn-warning mb-2 mr-2">
                         <i class="fa fa-plus"></i></a>
-                    <input id="sale_price" class="form-control col-4" name="sale_price" type="number"
+                    <input id="sale_price" class="form-control col-3 col-md-4" name="sale_price" type="number"
                         placeholder="R$" />
                     <div class="col-2 col-md-4 row pl-4">
-                        <div class="col-12 col-md-5 custom-control custom-radio">
+                        <div class="col-12 custom-control custom-radio">
                             <input type="radio" id="customRadio1" name="customRadio" class="custom-control-input">
                             <label class="custom-control-label" for="customRadio1">Item</label>
                         </div>
-                        <div class="col-12 col-md-5 custom-control custom-radio">
+                        <div class="col-12 custom-control custom-radio">
                             <input type="radio" id="customRadio2" name="customRadio" class="custom-control-input">
                             <label class="custom-control-label" for="customRadio2">Material</label>
                         </div>
@@ -53,7 +53,7 @@ Serviços
                 </div>
             </form>
         </div>
-        <div class="row scroll1">
+        <div class="scroll1">
             <table class="table table-striped">
                 <thead class="thead-dark">
                     <tr>
@@ -91,7 +91,7 @@ Serviços
             </table>
         </div>
     </div>
-    <div id="client-data" class="col-sm-12 col-md-6 ">
+    <div id="client-data" class="col-sm-12 col-md-7 ">
         <form method="POST">
 
             <div class="col-12">
@@ -103,14 +103,14 @@ Serviços
                     <input class="form-control col-12" id="client" value="Anonimo" />
                 </div>
                 <div class="row">
-                    <input class="form-control col-6" id="date" value="2019-04-07" />
+                    <input class="form-control col-6" type="date" id="date" value="2019-04-07" />
                     <input class="form-control col-6" id="status" value="OK" />
                 </div>
 
             </div>
-            <div class="col-12">
-                <div class="row">
-                    <table id="cart" class=" col-6 table table-striped">
+            <div class="row">
+                <div class="col-12 col-md-6">
+                    <table id="cart" class="table table-striped">
                         <thead class="thead-dark">
                             <tr>
                                 <th scope="col">Produto</th>
@@ -126,7 +126,9 @@ Serviços
                             </tr>
                         </tbody>
                     </table>
-                    <table id="cart" class="col-6 table table-striped">
+                </div>
+                <div class="col-12 col-md-6">
+                    <table id="cart" class="table table-striped">
                         <thead class="thead-dark">
                             <tr>
                                 <th scope="col">Produto</th>
@@ -142,29 +144,40 @@ Serviços
                             </tr>
                         </tbody>
                     </table>
-                    <a class="btn btn-warning btn-lg btn-block"><i class="fa fa-plus"></i></a>
                 </div>
 
             </div>
             <div>
-                <input id="labor" value="R$ 150,00" />
-                <input id="off" value="37" />
-                <input id="status" value="OK" />
-                <label class="switch">
-                    <input class="switch-input" type="checkbox" />
-                    <span class="switch-label" data-on="On" data-off="Off"></span>
-                    <span class="switch-handle"></span>
-                </label>
-            </div>
+                <div id="menu_close" class="row  ml-2 mr-2">
+                    <div class="row">
+                        <div class="ml-2 mr-1">
+                            <button type="button" onClick="formSubmit()" class="btn btn-success"><i
+                                    class="fa fa-shopping-cart"></i></button>
+                            <button class="btn btn-danger"><i class="fa fa-times"></i></button>
+                        </div>
+                        <input class="form-control col-5 col-md-4" id="labor" placeholder="Mão de obra" />
+                        <input id="off" type="number" min="0" max="100" step="0.1" onChange="setTotalOp()"
+                            class="form-control col-3 ml-2" placeholder="Desc" />
 
-
+                    </div>
+                    <div class="row">
+                        <div class="col-6 col-md-6 mt-2">
+                            <small>Subtotal</small>
+                            <h3 id="totalop">R$ 4000,00</h3>
+                        </div>
+                        <div class="col-6 col-md-6 mt-2">
+                            <small>Total</small>
+                            <h3 id="totalopOff">R$ 4000,00</h3>
+                        </div>
+                    </div>
+                </div>
         </form>
     </div>
 
 </div>
 
 
-<div id="div-popup" class='row '>
+<div id="div-popup" class='row invisible'>
     <iframe id="iframe-popup" class=" bg-light pt-3 rounded-lg"></iframe>
 </div>
 <div id="div-errors" class="invisible"></div>
