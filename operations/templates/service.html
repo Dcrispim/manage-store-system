@@ -2,10 +2,12 @@
 {% load static %}
 
 {% block 'links' %}
+<link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
 {% endblock 'links' %}
 
 
 {% block 'scripts' %}
+<script src="{% static 'service.js' %}"></script>
 {% endblock 'scripts' %}
 
 {% block 'title' %}
@@ -30,23 +32,19 @@ Serviços
                 <div class="row">
                     <input id="product" name="product" placeholder="Nome do produto" type="text"
                         class="form-control col-8 col-md-9 mb-2 mr-1">
-                    <input id="qtd" placeholder="qtd" type="number" class="form-control col-3 col-md-2 mb-2">
+                    <input id="qtd" min="0" placeholder="qtd" type="number" class="form-control col-3 col-md-2 mb-2">
                 </div>
                 <div class="row">
                     <button class="btn btn-info mb-2 mr-2" onClick="search()"><i class="fa fa-search"></i></button>
                     <a class="btn btn-success mb-2 mr-2" onClick="addCart()"><i class="fa fa-cart-plus"></i></a>
-                    <a id="btn_add-prod" class="btn btn-warning mb-2 mr-2">
-                        <i class="fa fa-plus"></i></a>
-                    <input id="sale_price" class="form-control col-3 col-md-4" name="sale_price" type="number"
-                        placeholder="R$" />
                     <div class="col-2 col-md-4 row pl-4">
-                        <div class="col-12 custom-control custom-radio">
-                            <input type="radio" id="customRadio1" name="customRadio" class="custom-control-input">
-                            <label class="custom-control-label" for="customRadio1">Item</label>
+                        <div class="custom-control custom-radio custom-control-inline">
+                            <input type="radio" id="cart_item" name="cart_item" class="custom-control-input">
+                            <label class="custom-control-label" for="cart_item">Item</label>
                         </div>
-                        <div class="col-12 custom-control custom-radio">
-                            <input type="radio" id="customRadio2" name="customRadio" class="custom-control-input">
-                            <label class="custom-control-label" for="customRadio2">Material</label>
+                        <div class="custom-control custom-radio custom-control-inline">
+                            <input type="radio" id="cart_material" name="cart_item" class="custom-control-input">
+                            <label class="custom-control-label" for="cart_material">Material</label>
                         </div>
                     </div>
 
@@ -78,69 +76,69 @@ Serviços
                         </td>
                     </tr>
                     {% endfor %}
-
-                    {% for item in products %}
-                    <tr>
-                        <td id="P{{item.pk}}" onClick="addToRegister(['P{{item.pk}}','{{item}}', 0])">
-                            {{item.name}}
-                        </td>
-                        <td>(SC)</td>
-                    </tr>
-                    {% endfor %}
                 </tbody>
             </table>
         </div>
     </div>
     <div id="client-data" class="col-sm-12 col-md-7 ">
-        <form method="POST">
+        <form id="form-service" method="POST">
+            {% csrf_token %}
 
             <div class="col-12">
                 <div class="row">
-                    <input class="form-control col-12" id="description" value="Troca de Tela" />
+                    <input class="form-control col-12" id="description" name="description" value="Troca de Tela" />
                 </div>
                 <div class="row">
-
-                    <input class="form-control col-12" id="client" value="Anonimo" />
+                    <select class="custom-select col-10 col-md-11" id="client" name="client">
+                        {% for item in form.client %}
+                          {{item}}
+                        {% endfor %}
+                      </select>
+                    <a id="btn_add-client" class="btn btn-warning"><i class="fa fa-user-plus"></i></a>
                 </div>
                 <div class="row">
-                    <input class="form-control col-6" type="date" id="date" value="2019-04-07" />
-                    <input class="form-control col-6" id="status" value="OK" />
+                    <input class="form-control col-6" type="date" id="date" name="date" value="2019-04-07" />
+                    <select class="custom-select col-6 col-md-6" id="status" name="status">
+                        {% for item in form.status %}
+                          {{item}}
+                        {% endfor %}
+                      </select>
                 </div>
 
             </div>
-            <div class="row">
-                <div class="col-12 col-md-6">
-                    <table id="cart" class="table table-striped">
+            <div class="row ">
+                <div class="scroll col-12 col-md-6">
+                    <table id="table_cart_items" class="table table-striped bg-light">
                         <thead class="thead-dark">
                             <tr>
-                                <th scope="col">Produto</th>
+                                <th scope="col">Itens</th>
                                 <th scope="col">Qtd/R$</th>
                                 <th scope="col">Act</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>Larry</td>
-                                <td>(50)xR$150</td>
+                                <td>Lista não Carregada</td>
+                                <td>ERRO</td>
                                 <td><a class="btn btn-danger"><i class="fa fa-trash-o"></i></a></td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
-                <div class="col-12 col-md-6">
-                    <table id="cart" class="table table-striped">
+                <div class=" scroll col-12 col-md-6">
+                    <table id="table_cart_materials" class="table table-striped bg-light">
                         <thead class="thead-dark">
                             <tr>
-                                <th scope="col">Produto</th>
+                                <th scope="col">Materiais</th>
                                 <th scope="col">Qtd/R$</th>
                                 <th scope="col">Act</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>Larry</td>
-                                <td>(50)xR$150</td>
-                                <td><a class="btn btn-danger"><i class="fa fa-trash-o"></i></a></td>
+                                <td>Lista não Carregada</td>
+                                <td>ERRO</td>
+                                <td><a class="btn btn-danger" onClick=""><i class="fa fa-trash-o"></i></a></td>
                             </tr>
                         </tbody>
                     </table>
@@ -149,35 +147,39 @@ Serviços
             </div>
             <div>
                 <div id="menu_close" class="row  ml-2 mr-2">
-                    <div class="row">
+                    <div class="row col-md-7">
                         <div class="ml-2 mr-1">
                             <button type="button" onClick="formSubmit()" class="btn btn-success"><i
                                     class="fa fa-shopping-cart"></i></button>
                             <button class="btn btn-danger"><i class="fa fa-times"></i></button>
                         </div>
-                        <input class="form-control col-5 col-md-4" id="labor" placeholder="Mão de obra" />
+                        <input id="labor" type="number" min="0" max="100" step="0.1" onChange="setTotalOp()"
+                            class="form-control col-4 col-md-5" placeholder="Mão de obra" />
                         <input id="off" type="number" min="0" max="100" step="0.1" onChange="setTotalOp()"
                             class="form-control col-3 ml-2" placeholder="Desc" />
 
                     </div>
-                    <div class="row">
-                        <div class="col-6 col-md-6 mt-2">
+                    <div class="row ml-2">
+                        <div class="col-6 col-md-6 align-middle">
                             <small>Subtotal</small>
                             <h3 id="totalop">R$ 4000,00</h3>
                         </div>
-                        <div class="col-6 col-md-6 mt-2">
+                        <div class="col-6 col-md-6">
                             <small>Total</small>
                             <h3 id="totalopOff">R$ 4000,00</h3>
                         </div>
                     </div>
                 </div>
+                <input id="input_items_cart" name="input_items_cart" />
+                <input id="input_items_material" name="input_materials_cart" />
         </form>
     </div>
 
 </div>
 
 
-<div id="div-popup" class='row invisible'>
+
+<div id="div-popup" class='row' style="visibility: hidden">
     <iframe id="iframe-popup" class=" bg-light pt-3 rounded-lg"></iframe>
 </div>
 <div id="div-errors" class="invisible"></div>

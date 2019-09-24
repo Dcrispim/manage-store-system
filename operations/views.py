@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, HttpResponse
 from django.db.utils import IntegrityError
 
 from .models import SalesOrBuy, Stock, Product, Client, CartItem, Operation
-from .forms import SalesOrBuyForm, ClientForm, ProductForm
+from .forms import SalesOrBuyForm, ClientForm, ProductForm, ServiceForm
 
 import json
 from utils.parse import strToArrayObj
@@ -131,7 +131,6 @@ def addClient(request):
     }
     return render(request, 'addclient.html', data)
 
-
 def addProduct(request):
     form = ProductForm(request.POST or None)
 
@@ -145,14 +144,16 @@ def addProduct(request):
     return render(request, 'addprod.html')
 
 def service(request):
+    errors = []
+    pesquisa = request.GET.get('product' or None)
     list_prod  = []
     stock_list = []
-    def setList():
-        pesquisa = request.GET.get('product' or None)
+    service_form = ServiceForm(request.POST or None)
+    def setList():     
         lp = setProductStockList(Stock,Product,pesquisa)
         if len(lp['errors'])==0:
-            list_prod = lp['product']
-            stock_list = lp['stock']
+            list_prod.extend(lp['product'])
+            stock_list.extend(lp['stock'])
         else:
             errors.extend(lp['errors'])
         
@@ -160,7 +161,10 @@ def service(request):
 
     data = {
         'stock': stock_list,
-        'products': list_prod
+        'products': list_prod,
+        'form':service_form
+
     }
+    print(request.POST)
     return render(request, 'service.html', data)
 
