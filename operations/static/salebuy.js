@@ -1,8 +1,5 @@
 if (localStorage.getItem('compra')) {
     let compra = localStorage.getItem('compra')
-    if (compra != 'aberta') {
-        localStorage.setItem('cart', [])
-    }
 
 } 
 else {
@@ -24,7 +21,7 @@ let inputCart = document.getElementById('input_cart')
 let form = document.getElementById('form-sale-buy')
 let errors = []
 let priceField = document.getElementById('sale_price')
-let off = document.getElementById('off')
+let offSaleBuy = document.getElementById('offSalebuy')
 let AddClient
 let AddProd
 let BtnAddProd = document.getElementById('btn_add-prod')
@@ -85,6 +82,7 @@ function saveLostCart(){
     save(date)
     save(mode)
     save(status) 
+    save(offSaleBuy)
 
 }
 
@@ -102,20 +100,18 @@ function recoveryLostCar(){
     recovery(date)
     recovery(mode)
     recovery(status)
+    recovery(offSaleBuy)
 
 }
 
 function setCart() {
     if (localStorage.getItem('cart') != null && localStorage.getItem('cart').length > 0) {
         let dbCart = localStorage.getItem('cart')
-        let db = dbCart.split('},')
-        for (let i = 0; i < db.length; i++) {
-            if (i < db.length - 1) {
-                cart.push(JSON.parse(db[i] + '}'))
-            } else {
-                cart.push(JSON.parse(db[i]))
-            }
+        if(JSON.parse(dbCart).salebuy){
+            cart = [...JSON.parse(dbCart).salebuy]
         }
+        
+        //cart = [...] || []
     }
 
     renderRows()
@@ -140,7 +136,7 @@ function sendCartToLocalStorage() {
     if (localStorage.getItem('cart')) {
         localStorage.removeItem('cart')
     }
-    jsonCart = JSON.stringify(cart).substring(1, JSON.stringify(cart).length - 1)
+    jsonCart = JSON.stringify({'salebuy':cart})
     localStorage.setItem('cart', jsonCart)
 }
 
@@ -182,11 +178,12 @@ function addToRegister(item) {
 }
 
 function setTotalOp() {
-    totalop.innerHTML = ''
-    totalopOff.innerHTML = ''
-    desc = parseFloat(off.value)/100 || 0
-    totalop.innerText = `R$ ${total.toFixed(2)} `
-    totalopOff.innerText = `R$ ${((total*(1-desc))).toFixed(2)} `
+    totalop.value = ''
+    totalopOff.value = ''
+    desc = parseFloat(offSaleBuy.value)/100 || 0
+    totalop.value = `${total.toFixed(2)} `
+    totalopOff.value = `${((total*(1-desc))).toFixed(2)} `
+    saveLostCart()
 }
 
 function removeCartItem(id) {

@@ -91,18 +91,18 @@ Serviços
                 <div class="row">
                     <select class="custom-select col-10 col-md-11" id="client" name="client">
                         {% for item in form.client %}
-                          {{item}}
+                        {{item}}
                         {% endfor %}
-                      </select>
+                    </select>
                     <a id="btn_add-client" class="btn btn-warning"><i class="fa fa-user-plus"></i></a>
                 </div>
                 <div class="row">
                     <input class="form-control col-6" type="date" id="date" name="date" value="2019-04-07" />
                     <select class="custom-select col-6 col-md-6" id="status" name="status">
                         {% for item in form.status %}
-                          {{item}}
+                        {{item}}
                         {% endfor %}
-                      </select>
+                    </select>
                 </div>
 
             </div>
@@ -153,25 +153,31 @@ Serviços
                                     class="fa fa-shopping-cart"></i></button>
                             <button class="btn btn-danger"><i class="fa fa-times"></i></button>
                         </div>
-                        <input id="labor" type="number" min="0" max="100" step="0.1" onChange="setTotalOp()"
-                            class="form-control col-4 col-md-5" placeholder="Mão de obra" />
-                        <input id="off" type="number" min="0" max="100" step="0.1" onChange="setTotalOp()"
-                            class="form-control col-3 ml-2" placeholder="Desc" />
+                        <input id="labor" name="labor" type="number" min="0" max="100" step="0.1"
+                            onChange="setTotalOp()" class="form-control col-4 col-md-5" placeholder="Mão de obra" />
+                        <input id="offService" name="off" type="number" min="0" max="100" step="0.01"
+                            onChange="setTotalOp()" class="form-control col-3 ml-2" placeholder="Desc" />
 
                     </div>
-                    <div class="row ml-2">
-                        <div class="col-6 col-md-6 align-middle">
+                    <div class="row col-12 ">
+                        <div class="col-6 col-md-4 align-middle">
                             <small>Subtotal</small>
-                            <h3 id="totalop">R$ 4000,00</h3>
+                            <input id="totalop" name="amount" readOnly='true' class="form-control mr-2">
                         </div>
-                        <div class="col-6 col-md-6">
-                            <small>Total</small>
-                            <h3 id="totalopOff">R$ 4000,00</h3>
+                        <div class="col-6 col-md-6 row">
+                            <small class="col-12">Total</small>
+                            <input id="totalopOff" type="number" onclick="activeTotalInput()"
+                                class="form-control col-md-4" data-toggle="collapse" href="#collapseExample"
+                                role="button" readonly>
+                            <a id="submitNewTotal" class="btn btn-warning col-5 col-md-2 invisible"
+                                onclick="setCustomOff()"><i class="fa fa-edit"></i></a>
                         </div>
                     </div>
                 </div>
-                <input id="input_items_cart" name="input_items_cart" />
-                <input id="input_items_material" name="input_materials_cart" />
+                <div class="invisible">
+                    <input id="input_items_cart" name="input_items_cart" />
+                    <input id="input_items_material" name="input_materials_cart" />
+                </div>
         </form>
     </div>
 

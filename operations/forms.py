@@ -11,6 +11,8 @@ class SalesOrBuyForm(ModelForm):
             'mode',
             'status',
             'date',
+            'off',
+            'amount'
              )
 
 class ClientForm(ModelForm):
@@ -41,10 +43,9 @@ class ServiceForm(ModelForm):
         model = Service
         fields = (
             'description',
-            'itens',
-            'material',
             'labor',
             'off',
+            'amount',
             'client',
             'status',
             'date'

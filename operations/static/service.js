@@ -1,9 +1,5 @@
 if (localStorage.getItem('service')) {
     let service = localStorage.getItem('service')
-    if (service != 'aberto') {
-        localStorage.setItem('cart', {})
-    }
-
 }
 else {
     localStorage.setItem('service', 'aberto')
@@ -23,11 +19,12 @@ let inputCart = [document.getElementById('input_items_cart'), document.getElemen
 let form = document.getElementById('form-service')
 let errors = []
 let priceField = document.getElementById('sale_price')
-let off = document.getElementById('off')
+let offService = document.getElementById('offService')
 let BtnAddClient = document.getElementById('btn_add-client')
 let popUpWindow = document.getElementById('iframe-popup')
 var DivpopUpWindow = document.getElementById('div-popup')
 let typeCartItem = ''
+let labor = document.getElementById('labor')
 
 let H = tamanho().h
 let W = tamanho().w
@@ -79,6 +76,8 @@ function saveLostCart() {
     save(client)
     save(date)
     save(status)
+    save(labor)
+    save(offService)
 
 }
 
@@ -95,13 +94,17 @@ function recoveryLostCar() {
     recovery(client)
     recovery(date)
     recovery(status)
+    recovery(labor)
+    recovery(offService)
 
 }
 
 function setCart() {
     if (localStorage.getItem('cart') != null && localStorage.getItem('cart').length > 0) {
         let dbCart = `${localStorage.getItem('cart')}`
-        cart = { ...JSON.parse(dbCart) }
+        let serviceCart = { items: JSON.parse(dbCart).items || [], 
+            materials: JSON.parse(dbCart).materials || [] }
+        cart = { ...serviceCart }
     }
     renderRows()
     setTotalOp()
@@ -127,11 +130,15 @@ function updateCartinput() {
 }
 
 function sendCartToLocalStorage() {
-    if (localStorage.getItem('cart')) {
-        localStorage.removeItem('cart')
-    }
     jsonCart = JSON.stringify(cart)
-    localStorage.setItem('cart', jsonCart)
+    if (localStorage.cart) {
+        dbCart = JSON.parse(localStorage.cart)   
+    }else{
+        dbCart = {}
+    }
+    dbCart['items'] = cart.items
+    dbCart['materials'] = cart.materials
+    localStorage.setItem('cart', JSON.stringify(dbCart))
 }
 
 
@@ -161,13 +168,14 @@ function addToRegister(item) {
 }
 
 function setTotalOp() {
-    totalop.innerHTML = ''
-    totalopOff.innerHTML = ''
-    desc = parseFloat(off.value) / 100 || 0
+    totalop.value = ''
+    totalopOff.value = ''
+    desc = parseFloat(offService.value) / 100 || 0
 
     T = (total.items + total.materials + parseFloat(((labor.value || 0))))
-    totalop.innerText = `R$ ${T.toFixed(2) || 0.00} `
-    totalopOff.innerText = `R$ ${((T * (1 - desc)).toFixed(2)) || 0} `
+    totalop.value = `${T.toFixed(2) || 0.00}`
+    totalopOff.value = `${((T * (1 - desc)).toFixed(2)) || 0}`
+    saveLostCart()
 }
 
 function removeCartItem(id, typeCart) {
@@ -250,6 +258,9 @@ function formSubmit() {
     localStorage.removeItem('date')
     localStorage.removeItem('status')
     localStorage.setItem('service', 'fechada')
+    localStorage.removeItem('off')
+    let tempOff = parseFloat(offService.value)
+    offService.value = tempOff/100
     if (parseFloat(labor.value) > 0) {
         let ok = confirm('Deseja Finalizar a service')
         if (ok == true) {
@@ -273,6 +284,26 @@ function getParam() {
     return data
 }
 
+function setCustomOff() {
+
+    let newTotal = parseFloat(document.getElementById('totalopOff').value)
+    let newOff = newTotal / parseFloat(totalop.value)
+    if (newTotal < parseFloat(totalop.value)) {
+        offService.value = ((1 - newOff) * 100).toFixed(2)
+        setTotalOp()
+    }
+    document.getElementById('totalopOff').setAttribute('readonly',null)
+    let newSubmitTotal = document.getElementById('submitNewTotal')
+    let classSubmit = newSubmitTotal.getAttribute('class') + ' invisible'
+    newSubmitTotal.setAttribute('class', classSubmit)
+}
+
+function activeTotalInput(){
+    document.getElementById('totalopOff').removeAttribute('readonly')
+    let newSubmitTotal = document.getElementById('submitNewTotal')
+    let classSubmit = newSubmitTotal.getAttribute('class').replace('invisible','')
+    newSubmitTotal.setAttribute('class', classSubmit)
+}
 
 window.addEventListener('load', () => {
     setCart()
