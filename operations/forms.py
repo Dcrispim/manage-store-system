@@ -1,5 +1,5 @@
 from django.forms import ModelForm
-from .models import SalesOrBuy, Stock, Product, Client, CartItem, Service
+from .models import SalesOrBuy, Stock, Product, Client, CartItem, Service, Operation
 
 
 class SalesOrBuyForm(ModelForm):
@@ -49,4 +49,11 @@ class ServiceForm(ModelForm):
             'client',
             'status',
             'date'
+             )
+
+class OperationForm(ModelForm):
+    
+    class Meta:
+        model = Operation
+        fields = ('__all__'
              )

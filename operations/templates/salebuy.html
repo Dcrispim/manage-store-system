@@ -4,29 +4,55 @@
 
 {% block 'links' %}
 <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'mystrap.css' %}">
 {% endblock 'links' %}
 
 {% block 'title' %}
 Sale or Buy
 {% endblock 'title' %}
 
+{% block 'header' %}
+<h1>
+  Compra e Venda
+  <small>Adicionar</small>
+</h1>
+<ol class="breadcrumb">
+  <li><a href="{% url 'home' %}"><i class="fa fa-dashboard"></i> Home</a></li>
+  <li class="active">Compra e Venda</li>
+</ol>
+{% endblock 'header' %}
+
 {% block 'content' %}
 <div id="div-errors" class="invisible"></div>
 <div class="row ml-2 mt-2 pr-3">
   <div id="left-pane" class="col-sm-12 col-md-6 ">
     <div id="search_field" class="">
-      <form id="search_form" method="GET">
+      <form id="search_form" class="" method="GET">
         <div class="row">
-          <input id="product" name="product" placeholder="Nome do produto" type="text" class="form-control col-10 mb-2">
-          <input id="qtd" placeholder="qtd" type="number" class="form-control col-2 mb-2">
+
+          <div class="col-xs-8 col-md-9">
+            <input id="product" name="product" placeholder="Nome do produto" type="text" class="form-control">
+          </div>
+
+          <div class="input-group col-xs-4 col-md-3 pull-right">
+            <input id="qtd" placeholder="qtd" style="width: 100%" type="number" class="form-control">
+          </div>
         </div>
         <div class="row">
-          <button class="btn btn-info mb-2 mr-2" onClick="search()"><i class="fa fa-search"></i></button>
-          <a class="btn btn-success mb-2 mr-2" onClick="addCart()"><i class="fa fa-cart-plus"></i></a>
-          <a id="btn_add-prod" class="btn btn-warning mb-2 mr-2">
-            <i class="fa fa-plus"></i></a>
-          <input id="sale_price" class="form-control col-4" name="sale_price" type="number" placeholder="R$" />
+          <div class="col-xs-6">
+            <button class="btn btn-info" onClick="search()"><i class="fa fa-search"></i></button>
+            <a class="btn btn-success" onClick="addCart()"><i class="fa fa-cart-plus"></i></a>
+            <a id="btn_add-prod" class="btn btn-warning">
+              <i class="fa fa-plus"></i>
+            </a>
+          </div>
+          <div class="input-group col-xs-3 col-md-3 pull-right">
+            <span class="input-group-addon">R$</span>
+            <input id="sale_price" style="width: 100%" class="form-control " name="sale_price" type="number"
+              placeholder="R$" />
+          </div>
         </div>
+
       </form>
     </div>
     <div class="row scroll1">
@@ -71,34 +97,45 @@ Sale or Buy
       <div id="info_client" class="col-sm-12">
 
         {% csrf_token %}
-        <div class="row mb-2">
-          <select class="custom-select col-10 col-md-11" id="client" name="client">
-            {% for item in form.client %}
+        <div class="row input-group col-md-12">
+          <div class="row input col-md-11">
+            <select class="form-control" id="client" name="client">
+              {% for item in form.client %}
               {{item}}
-            {% endfor %}
-          </select>
-          <div class="col-2 col-md-1"><a id="btn_add-client" class="btn btn-warning"><i class="fa fa-user-plus"></i></a>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="inpu-group-btn">
+            <button id="btn_add-client" type="button" class="btn btn-warning"><i class="fa fa-user-plus"></i></button>
           </div>
         </div>
-        <div class="row">
-          <input id="date" name="date" type="date" class="form-control col-6 col-md-4 pr-2 mb-2">
-          <select class="custom-select col-6 col-md-3 mb-2" id="mode" name="mode">
-            <option value="0">VENDA</option>
-            <option value="1">COMPRA</option>
-          </select>
+        <div class="row form-group">
+          <div class="row input col-md-5">
+            <input id="date" type="date" class="form-control" data-inputmask="'alias': 'dd/mm/aaaa'" name="date"
+              data-mask>
+          </div>
+          <div class="row col-md-4 input">
+            <select class="form-control" id="mode" name="mode">
+              {% for item in form.mode %}
+              {{item}}
+              {% endfor %}
+            </select>
+          </div>
 
-          <select class="custom-select col-12 col-md-3" id="status" name="status">
-            <option value="0">PENDENTE</option>
-            <option value="1">OK</option>
-            <option value="2">CANCELADO</option>
-          </select>
+          <div class="row col-md-4 input ">
+            <select class="form-control" id="status" name="status">
+              {% for item in form.status %}
+              {{item}}
+              {% endfor %}
+            </select>
 
 
+          </div>
         </div>
 
 
       </div>
-      <div id="list_cart" class="row pl-3 pr-3 mt-2 scroll1">
+      <div id="list_cart" class="row pl-3 pr-3 mt-2 scroll">
         <table id="cart" class="table table-striped">
           <thead class="thead-dark">
             <tr>
@@ -109,37 +146,50 @@ Sale or Buy
           </thead>
           <tbody>
             <tr>
-              <td>Larry</td>
-              <td>(50)xR$150</td>
+              <td>Lista nã Carregada</td>
+              <td>ERRO</td>
               <td><a class="btn btn-danger"><i class="fa fa-trash-o"></i></a></td>
             </tr>
           </tbody>
         </table>
         <input id="input_cart" name="input_cart" class="invisible" readOnly=true></input>
       </div>
-      <div id="menu_close" class="row  ml-1 mr-2">
-        <div class="mt-2 mr-1">
-          <button type="button" onClick="formSubmit()" class="btn btn-success"><i
-              class="fa fa-shopping-cart"></i></button>
-          <button class="btn btn-danger"><i class="fa fa-times"></i></button>
-        </div>
-        <div class="col-6 col-md-3 mt-2 mr-4">
-          <input id="offSalebuy"  name="off" type="number" step="0.01" onChange="setTotalOp()" class="form-control" placeholder="Desc">
+
+      <div id="menu_close" class="row  form-group box-footer">
+        <button type="button" onClick="formSubmit()" class="btn btn-success"><i
+            class="fa fa-shopping-cart"></i></button>
+        <button class="btn btn-danger"><i class="fa fa-times"></i></button>
+        <div class="input col-md-3">
+          <input id="offSalebuy" name="off" type="number" step="0.01" onChange="setTotalOp()" class="form-control"
+            placeholder="Desc">
         </div>
         <div class="col-12 col-md-12 mt-2 row">
-          <input id="totalop" name="amount" readOnly='true' class="form-control col-md-3 col-5 mr-2">
-          <input id="totalopOff" readOnly='true' class="form-control col-md-3 col-5">
+          <div class="col-md-5 row form-group ">
+            <label for="totalop">Subtotal</label>
+            <input id="totalop" name="amount" readOnly='true' class="form-control">
+          </div>
+          <div class="col-md-6 row form-group">
+            <label for="totalopOff" class="col-md-12">Total</label>
+            <input id="totalopOff" type="number" onclick="activeTotalInput()" class="form-control col-md-5"
+              data-toggle="collapse" href="#collapseExample" role="button" readonly>
+            <a id="submitNewTotal" class="btn btn-warning invisible col-md-3" onclick="setCustomOff()"><i
+                class="fa fa-edit"></i></a>
+          </div>
+          <div class="input-group-btn pull-bottom">
+
+          </div>
         </div>
       </div>
+
     </form>
   </div>
 </div>
 
 <div id="div-popup" class='row invisible'>
-    <iframe id="iframe-popup" class=" bg-light pt-3 rounded-lg"></iframe>
+  <iframe id="iframe-popup" class=" bg-light pt-3 rounded-lg"></iframe>
 </div>
 {% endblock 'content' %}
 
 {% block 'scripts' %}
-  <script src="{% static 'salebuy.js' %}"></script>
+<script src="{% static 'salebuy.js' %}"></script>
 {% endblock 'scripts' %}

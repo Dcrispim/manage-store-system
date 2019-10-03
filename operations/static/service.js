@@ -165,6 +165,8 @@ function addCart() {
 function addToRegister(item) {
     prod.value = item[1]
     ItemDoCaixa = item
+    qtd.value=1
+    qtd.focus()
 }
 
 function setTotalOp() {
@@ -257,8 +259,8 @@ function formSubmit() {
     localStorage.removeItem('client')
     localStorage.removeItem('date')
     localStorage.removeItem('status')
-    localStorage.setItem('service', 'fechada')
-    localStorage.removeItem('off')
+    localStorage.setItem('service', 'fechado')
+    localStorage.removeItem('offService')
     let tempOff = parseFloat(offService.value)
     offService.value = tempOff/100
     if (parseFloat(labor.value) > 0) {
@@ -290,12 +292,12 @@ function setCustomOff() {
     let newOff = newTotal / parseFloat(totalop.value)
     if (newTotal < parseFloat(totalop.value)) {
         offService.value = ((1 - newOff) * 100).toFixed(2)
-        setTotalOp()
     }
     document.getElementById('totalopOff').setAttribute('readonly',null)
     let newSubmitTotal = document.getElementById('submitNewTotal')
     let classSubmit = newSubmitTotal.getAttribute('class') + ' invisible'
     newSubmitTotal.setAttribute('class', classSubmit)
+    setTotalOp()
 }
 
 function activeTotalInput(){

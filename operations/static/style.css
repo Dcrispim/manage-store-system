@@ -1,11 +1,21 @@
+body{
+  height: 300px;
+}
+
 .anim-fade-in:hover{
     background-color: red; 
   }
 
   .scroll{
-    height: 40vh;
+    height: 20vh;
     overflow: auto;
   }
+
+  .scroll-lg{
+    height: 80vh;
+    overflow: auto;
+  }
+
   .scroll1{
     max-height: 50vh;
     overflow: auto;
@@ -54,4 +64,7 @@
   z-index: 100;
   top: 50px;
   left: 50px;
+}
+.fill{
+  width:100%;
 }

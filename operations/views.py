@@ -2,10 +2,10 @@ from django.shortcuts import render, redirect, HttpResponse
 from django.db.utils import IntegrityError
 
 from .models import SalesOrBuy, Stock, Product, Client, CartItem, Operation, Service
-from .forms import SalesOrBuyForm, ClientForm, ProductForm, ServiceForm
+from .forms import SalesOrBuyForm, ClientForm, ProductForm, ServiceForm, OperationForm
 
 import json
-from utils.parse import strToArrayObj
+from utils.parse import strToArrayObj, strToDate
 from utils.validate import prefixID as idValid
 from .func import setProductStockList
 
@@ -39,7 +39,7 @@ def salebuy(request):
             pkId = i['product']
 
         ID = Product.objects.get(pk=pkId)
-        print(addCartItem(pkId, i['qtd'], OPID, 0))
+        addCartItem(pkId, i['qtd'], OPID, 0)
 
     def updateStock(id, qtd):
         Stock.objects.filter(pk=id).update(qtd=qtd)
@@ -92,7 +92,8 @@ def salebuy(request):
             errors.extend(lp['errors'])
 
     setList()
-
+    print(request.POST)
+    print(form.is_valid())
     if form.is_valid():
         try:
             if len(errors) == 0:
@@ -217,6 +218,39 @@ def service(request):
     }
     return render(request, 'service.html', data)
 
+def operation(request):
+    form = OperationForm(request.POST or None)
+    total_credits = 0
+    total_debts = 0
+    date_in = request.GET.get('date-in' or '')
+    date_out = request.GET.get('date-out' or '')
+    oprations = Operation.objects.all()
+    try:
+        list_op = oprations.filter(date__gte=date_in) if len(date_in)>0 else oprations
+    except:
+        list_op = oprations
+    try:
+        list_op = list_op.filter(date__lte=date_out) if len(date_out)>0 else list_op
+    except:
+        pass
+
+    for op in list_op:
+        total_credits += op.credit
+        total_debts += op.debt
+
+
+    if form.is_valid():
+        form.save()
+        return redirect('operation')
+    data = {
+        'form': form,
+        'operations':list_op.order_by('-date'),
+        'total_cred': total_credits,
+        'total_deb': total_debts,
+        'total': total_credits-total_debts
+        }
+    
+    return render(request, 'operation.html', data)
 
 def addOperation(item):
     Operation.objects.create(description=item['description'],
@@ -263,3 +297,4 @@ def addCartItem(prod_id, qtd, op_id, op_type):
     except Exception as err:
         print(err)
         return -1
+

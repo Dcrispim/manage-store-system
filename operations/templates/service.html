@@ -14,40 +14,42 @@
 Serviços
 {% endblock 'title' %}
 
+{% block 'header' %}
+<h1>
+    Serviços
+    <small>Adicionar</small>
+</h1>
+<ol class="breadcrumb">
+    <li><a href="{% url 'home' %}"><i class="fa fa-dashboard"></i> Home</a></li>
+    <li class="active">Serviços</li>
+</ol>
+{% endblock 'header' %}
+
 {% block 'content' %}
-<!--
-        description
-        itens 
-        material 
-        labor
-        off
-        client
-        status
-        date  
-    -->
 <div class="row pl-1">
     <div id="left-pane" class="col-sm-12 col-md-5 mt-2 ">
         <div id="search_field" class="">
-            <form id="search_form" class="ml-3" method="GET">
-                <div class="row">
+            <form id="search_form" class="row" method="GET">
+                <div class="row input col-md-9">
                     <input id="product" name="product" placeholder="Nome do produto" type="text"
                         class="form-control col-8 col-md-9 mb-2 mr-1">
-                    <input id="qtd" min="0" placeholder="qtd" type="number" class="form-control col-3 col-md-2 mb-2">
                 </div>
-                <div class="row">
+                <div class="input-group col-xs-4 col-md-3 pull-right">
+                    <input id="qtd" placeholder="qtd" style="width: 100%" type="number" class="form-control">
+                </div>
+                <div class="row input col-md-5">
                     <button class="btn btn-info mb-2 mr-2" onClick="search()"><i class="fa fa-search"></i></button>
                     <a class="btn btn-success mb-2 mr-2" onClick="addCart()"><i class="fa fa-cart-plus"></i></a>
-                    <div class="col-2 col-md-4 row pl-4">
-                        <div class="custom-control custom-radio custom-control-inline">
-                            <input type="radio" id="cart_item" name="cart_item" class="custom-control-input">
-                            <label class="custom-control-label" for="cart_item">Item</label>
-                        </div>
-                        <div class="custom-control custom-radio custom-control-inline">
-                            <input type="radio" id="cart_material" name="cart_item" class="custom-control-input">
-                            <label class="custom-control-label" for="cart_material">Material</label>
-                        </div>
+                </div>
+                <div class="row input-group">
+                    <div class="custom-control custom-radio">
+                        <input type="radio" id="cart_item" name="cart_item" class="custom-control-input">
+                        <label class="custom-control-label" for="cart_item">Item</label>
                     </div>
-
+                    <div class="custom-control custom-radio">
+                        <input type="radio" id="cart_material" name="cart_item" class="custom-control-input">
+                        <label class="custom-control-label" for="cart_material">Material</label>
+                    </div>
                 </div>
             </form>
         </div>
@@ -88,17 +90,21 @@ Serviços
                 <div class="row">
                     <input class="form-control col-12" id="description" name="description" value="Troca de Tela" />
                 </div>
-                <div class="row">
-                    <select class="custom-select col-10 col-md-11" id="client" name="client">
+                <div class="row input col-md-11">
+                    <select class="row form-control" id="client" name="client">
                         {% for item in form.client %}
                         {{item}}
                         {% endfor %}
                     </select>
+                </div>
+                <div class="row input-group-btn">
                     <a id="btn_add-client" class="btn btn-warning"><i class="fa fa-user-plus"></i></a>
                 </div>
-                <div class="row">
-                    <input class="form-control col-6" type="date" id="date" name="date" value="2019-04-07" />
-                    <select class="custom-select col-6 col-md-6" id="status" name="status">
+                <div class="row col-md-4">
+                    <input class="row form-control col-6" type="date" id="date" name="date" value="2019-04-07" />
+                </div>
+                <div class="row col-md-4 ">
+                    <select class="row form-control col-6 col-md-6" id="status" name="status">
                         {% for item in form.status %}
                         {{item}}
                         {% endfor %}
@@ -146,32 +152,43 @@ Serviços
 
             </div>
             <div>
-                <div id="menu_close" class="row  ml-2 mr-2">
-                    <div class="row col-md-7">
-                        <div class="ml-2 mr-1">
+                <div id="menu_close" class="row  ml-2 mr-2 box-footer">
+                    <div class="row col-md-12 form-group">
+                        <div class="row col-md-5 input">
                             <button type="button" onClick="formSubmit()" class="btn btn-success"><i
                                     class="fa fa-shopping-cart"></i></button>
                             <button class="btn btn-danger"><i class="fa fa-times"></i></button>
                         </div>
-                        <input id="labor" name="labor" type="number" min="0" max="100" step="0.1"
-                            onChange="setTotalOp()" class="form-control col-4 col-md-5" placeholder="Mão de obra" />
-                        <input id="offService" name="off" type="number" min="0" max="100" step="0.01"
-                            onChange="setTotalOp()" class="form-control col-3 ml-2" placeholder="Desc" />
+                        <div class="input col-md-3">
+                            <label for="labor">Mão de Obra</label>
+                            <input id="labor" name="labor" type="number" min="0" max="100" step="0.1"
+                                onChange="setTotalOp()" class="form-control col-4 col-md-5" placeholder="Mão de obra" />
+                        </div>
+                        <div class="input col-md-3">
+                            <label for="offService">Desconto</label>
+                            <input id="offService" name="off" type="number" min="0" max="100" step="0.01"
+                                onChange="setTotalOp()" class="form-control col-3 ml-2" placeholder="Desc" />
+                        </div>
 
                     </div>
-                    <div class="row col-12 ">
-                        <div class="col-6 col-md-4 align-middle">
-                            <small>Subtotal</small>
-                            <input id="totalop" name="amount" readOnly='true' class="form-control mr-2">
-                        </div>
-                        <div class="col-6 col-md-6 row">
-                            <small class="col-12">Total</small>
+                    <div class="col-md-5 input-group  pull-right">
+                        <label for="totalop" class="col-md-12">Subtotal</label>
+                        <span class="input-group-addon">R$</span>
+                        <input id="totalop" name="amount" readOnly='true' class="form-control pull-right">
+                    </div>
+                    <div class="row form-group col-md-12 pull-right">
+                        <div class="col-md-5 input-group  pull-right">
+                            <label for="totalopOff" class="col-md-12">Total</label>
+                            <span class="input-group-addon">R$</span>
                             <input id="totalopOff" type="number" onclick="activeTotalInput()"
-                                class="form-control col-md-4" data-toggle="collapse" href="#collapseExample"
+                                class="form-control" data-toggle="collapse" href="#collapseExample"
                                 role="button" readonly>
-                            <a id="submitNewTotal" class="btn btn-warning col-5 col-md-2 invisible"
+                        </div>
+                        <div class="row input col-md-5 pull-right">
+                            <a id="submitNewTotal" class="btn btn-warning invisible pull-right"
                                 onclick="setCustomOff()"><i class="fa fa-edit"></i></a>
                         </div>
+
                     </div>
                 </div>
                 <div class="invisible">

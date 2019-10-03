@@ -1,4 +1,5 @@
 import json
+from datetime import datetime as dt
 
 
 
@@ -30,4 +31,8 @@ def strToArrayObj(stringObj,tryOnlyResponse=False):
     return (out_list, errors)
 
 
-    
+def strToDate(strDate):
+    try:
+        return dt.date(dt.strptime(strDate,'%Y-%m-%d'))
+    except:
+        return False
