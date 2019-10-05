@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, HttpResponse
 from django.db.utils import IntegrityError
+from django.contrib.auth.decorators import login_required
 
 from .models import SalesOrBuy, Stock, Product, Client, CartItem, Operation, Service
 from .forms import SalesOrBuyForm, ClientForm, ProductForm, ServiceForm, OperationForm
@@ -11,10 +12,11 @@ from .func import setProductStockList
 
 
 # Create your views here.
+@login_required
 def home(request):
     return render(request, 'home.html')
 
-
+@login_required
 def salebuy(request):
     errors = []
     pesquisa = request.GET.get('product', None)
@@ -118,7 +120,7 @@ def salebuy(request):
         'products': list_prod}
     return render(request, 'salebuy.html', data)
 
-
+@login_required
 def addClient(request):
     form = ClientForm(request.POST or None)
 
@@ -131,7 +133,7 @@ def addClient(request):
     }
     return render(request, 'addclient.html', data)
 
-
+@login_required
 def addProduct(request):
     form = ProductForm(request.POST or None)
 
@@ -144,7 +146,7 @@ def addProduct(request):
     }
     return render(request, 'addprod.html')
 
-
+@login_required
 def service(request):
     errors = []
     pesquisa = request.GET.get('product' or None)
@@ -218,6 +220,7 @@ def service(request):
     }
     return render(request, 'service.html', data)
 
+@login_required
 def operation(request):
     form = OperationForm(request.POST or None)
     total_credits = 0
@@ -252,13 +255,14 @@ def operation(request):
     
     return render(request, 'operation.html', data)
 
+@login_required
 def addOperation(item):
     Operation.objects.create(description=item['description'],
                              orig_dest=item['orig_dest'], credit=float(item['credit'])*(1-float(item['off'])), debt=float(item['debt'])*(1-float(item['off'])),
                              status=item['status'], date=item['date'],
                              )
 
-
+@login_required
 def stockVerify(productId, qtd):
     product = Product.objects.get(pk=productId) if len(
         Product.objects.filter(pk=productId)) else None
@@ -269,7 +273,7 @@ def stockVerify(productId, qtd):
     else:
         return False
 
-
+@login_required
 def stockSub(stockId, qtd):
     stockItem = Stock.objects.get(pk=stockId)
     if stockItem.qtd < qtd:
@@ -279,7 +283,7 @@ def stockSub(stockId, qtd):
         Stock.objects.filter(pk=stockId).update(qtd=new_qtd)
         return new_qtd
 
-
+@login_required
 def addCartItem(prod_id, qtd, op_id, op_type):
     op_types = {0: 'COMPRA', 1: 'VENDA', 2: 'ITEM', 3: 'MATERIAL'}
     try:

@@ -17,7 +17,9 @@ from django.contrib import admin
 from django.urls import path,include
 from operations import urls as op_urls
 
+
 urlpatterns = [
     path('', include(op_urls), name='operations'),
     path('admin/', admin.site.urls),
+    path('accounts/', include('django.contrib.auth.urls')),
 ]

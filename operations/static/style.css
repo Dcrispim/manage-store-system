@@ -68,3 +68,16 @@ body{
 .fill{
   width:100%;
 }
+
+
+.card-login {
+  width:300px; /* Largura da DIV */
+  height:300px; /* Altura da DIV */
+  position:absolute; /* Importante! */
+  top:50%;
+  left:50%;
+  margin-top:-150px; /* Essa função pega 50% da altura da tela e compensa com metade da altura da DIV(300px/2 = 150px) */
+  margin-left:-150px; /* Essa função pega 50% da largura tela e compensa com metade da largura da DIV(600px/2 = 300px) */
+  box-shadow:2px 2px 8px;
+  
+  }

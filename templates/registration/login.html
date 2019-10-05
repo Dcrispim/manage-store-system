@@ -1,0 +1,35 @@
+{% extends 'base2.html' %}
+{% load static %}
+{% load  bootstrap %}
+
+{% block 'links' %}
+<link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
+{% endblock 'links' %}
+
+{% block 'scripts' %}
+{% endblock 'scripts' %}
+
+{% block 'title' %}
+{% endblock 'title' %}
+
+
+{% block 'content' %}
+
+    <div class="card-login col-md-4">
+
+        <header class="d-flex justify-content-center">
+            <h1>Tech Pallas</h1>
+        </header>
+        <div class="container mb-5 d-flex align-items-center justify-content-center">
+            <form method="post" class="p-1">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ next }}">
+                {{form |bootstrap}}
+                <button type="submit" class="btn btn-primary">Logar</button>
+                
+            </form>
+            
+        </div>
+    </div>
+
+{% endblock 'content' %}
