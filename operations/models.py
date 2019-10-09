@@ -93,3 +93,7 @@ class Operation(models.Model):
 
     def __str__(self):
         return self.description
+
+class Config(models.Model):
+    variables = models.TextField(default="{}", blank=True, null=True)
+    

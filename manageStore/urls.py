@@ -18,8 +18,10 @@ from django.urls import path,include
 from operations import urls as op_urls
 
 
+
 urlpatterns = [
     path('', include(op_urls), name='operations'),
+    path('api/', include('operations.api.urls'), name='api'),
     path('admin/', admin.site.urls),
     path('accounts/', include('django.contrib.auth.urls')),
 ]
