@@ -281,11 +281,15 @@ def operation(request):
 
 #########|#########|#########|#########|#########|#########|#########|#########|
 def _addOperation(item):
+    
+    credit = float(item["credit"]) if not (type(item["credit"])==type(None)) else 0
+    debt = float(item["debt"]) if not (type(item["debt"])==type(None)) else 0
+    off = float(item["off"]) if not (type(item["off"])==type(None)) else 0
     Operation.objects.create(
         description=item["description"],
         orig_dest=item["orig_dest"],
-        credit=float(item["credit"]) * (1 - float(item["off"])),
-        debt=float(item["debt"]) * (1 - float(item["off"])),
+        credit=credit * (1 - off),
+        debt=debt * (1 - off),
         status=item["status"],
         date=item["date"],
     )
@@ -339,7 +343,11 @@ def _addCartItem(prod_id, qtd, op_id, op_type):
         return -1
 
 def _getMultiplier(mult):
-    variables = json.loads(Config.objects.get(pk=1).variables)
+    try:
+        variables = json.loads(Config.objects.all()[0].variables)
+    except:
+        Config.objects.create(variables="{}")
+        variables = json.loads(Config.objects.all()[0].variables)g
     try:
         return variables['multipliers'][mult]
     except KeyError:
