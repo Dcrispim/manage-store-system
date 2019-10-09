@@ -71,7 +71,7 @@ def salebuy(request):
                     total = total + item["qtd"] * stockItem.sale_price
             else:
                 stockItem = Stock.objects.filter(product=product_item)[0]
-                new_sale_price = _getMultiplier('sale_price')*item['price']
+                new_sale_price = (1+_getMultiplier('sale_price'))*item['price']
                 max_range = _getMultiplier('range')+1
                 if float(stockItem.sale_price)*float(max_range)<new_sale_price:
                     Stock.objects.filter(product=product_item).update(sale_price=new_sale_price)
@@ -343,6 +343,13 @@ def _getMultiplier(mult):
     try:
         return variables['multipliers'][mult]
     except KeyError:
+        if not (type(variables['multipliers']) == dict):
+            variables['multipliers'] = {}
+            
+        variables['multipliers'].update({mult:0})
+            
+        return variables['multipliers'][mult]
+    except:
         return None
 
 def _setMultiplier(mult, value):
