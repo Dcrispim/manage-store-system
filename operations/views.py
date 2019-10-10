@@ -347,7 +347,7 @@ def _getMultiplier(mult):
         variables = json.loads(Config.objects.all()[0].variables)
     except:
         Config.objects.create(variables="{}")
-        variables = json.loads(Config.objects.all()[0].variables)g
+        variables = json.loads(Config.objects.all()[0].variables)
     try:
         return variables['multipliers'][mult]
     except KeyError:
