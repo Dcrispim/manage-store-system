@@ -40,8 +40,8 @@ Sale or Buy
         <div class="row form-group">
           <div class="row input col-md-5">
             <input id="date" 
-            value = "{{sb.details.data}}"
-            type="date" 
+            value = "{{sb.details.date}}"
+            
             class="form-control" 
             data-inputmask="'alias': 'dd/mm/aaaa'" name="date"
             data-mask
@@ -69,7 +69,7 @@ Sale or Buy
             <tr>
               <th scope="col">Produto</th>
               <th scope="col">Qtd/R$</th>
-              <th scope="col">Act</th>
+              <th scope="col">total</th>
             </tr>
           </thead>
           <tbody>
@@ -78,7 +78,7 @@ Sale or Buy
             <tr>
               <td>{{item.product}}</td>
               <td>({{item.qtd}})x R${{item.price}}</td>
-              <td><a class="btn btn-danger"><i class="fa fa-trash-o"></i></a></td>
+              <td id="tot{{item.product.pk}}" onload="mult('tot{{item.product.pk}}',{{item.qtd}},{{item.price}})"></td>
             </tr>
             {% endfor %}
             
@@ -88,25 +88,17 @@ Sale or Buy
       </div>
 
       <div id="menu_close" class="row  form-group box-footer">
-        <button type="button" onClick="formSubmit()" class="btn btn-success"><i
-            class="fa fa-shopping-cart"></i></button>
-        <button class="btn btn-danger"><i class="fa fa-times"></i></button>
-        <div class="input col-md-3">
-          <input id="offSalebuy" value="{{ sb.details.off}}" name="off" type="number" step="0.01" onChange="setTotalOp()" class="form-control"
-            placeholder="Desc">
-        </div>
+        
         <div class="col-12 col-md-12 mt-2 row">
           <div class="col-md-5 row form-group ">
-            <label for="totalop">Subtotal</label>
-            <input id="totalop" name="amount" readOnly='true' class="form-control">
+            <label for="totalop">Desconto</label>
+            <input id="totalop" value="{{ sb.details.off}}" name="amount" readOnly='true' class="form-control">
           </div>
           <div class="col-md-6 row form-group">
             <label for="totalopOff" class="col-md-12">Total</label>
-            <input id="totalopOff" type="number" onclick="activeTotalInput()" class="form-control col-md-5"
+            <input id="totalopOff" value="{{ sb.details.amount}}" type="number" class="form-control col-md-5"
               data-toggle="collapse" href="#collapseExample" role="button" readonly>
-            <a id="submitNewTotal" class="btn btn-warning invisible col-md-3" onclick="setCustomOff()"><i
-                class="fa fa-edit"></i></a>
-          </div>
+            </div>
           <div class="input-group-btn pull-bottom">
 
           </div>
@@ -122,5 +114,5 @@ Sale or Buy
 {% endblock 'content' %}
 
 {% block 'scripts' %}
-<script src="{% static 'salebuy.js' %}"></script>
+<script src="{% static 'datail_salebuy.js' %}"></script>
 {% endblock 'scripts' %}
