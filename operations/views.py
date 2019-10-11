@@ -279,6 +279,36 @@ def operation(request):
 
     return render(request, "operation.html", data)
 
+
+@login_required
+def listSaleBuy(request):
+    search = request.GET.get('search')
+    list_sale_buy = SalesOrBuy.objects.all()
+
+    data = {
+        'list_sb':list_sale_buy
+    }
+
+    return render(request, 'list_salebuy.html',data)
+@login_required
+def detailSaleBuy(request, pk):
+    search = request.GET.get('search')
+    cart = []
+    for item in CartItem.objects.filter(sbid=pk):
+        cart_item = {'product':item.product,
+            'qtd': item.qtd,
+            'price': Stock.objects.get(product=item.product).sale_price
+        }
+        cart.append(cart_item)
+    detail_sale_buy = {'details': SalesOrBuy.objects.get(pk=pk),
+                        'cart': cart
+                        }
+
+    data = {
+        'sb':detail_sale_buy
+    }
+
+    return render(request, 'detail_salebuy.html',data)
 #########|#########|#########|#########|#########|#########|#########|#########|
 def _addOperation(item):
     
@@ -347,7 +377,7 @@ def _getMultiplier(mult):
         variables = json.loads(Config.objects.all()[0].variables)
     except:
         Config.objects.create(variables="{}")
-        variables = json.loads(Config.objects.all()[0].variables)g
+        variables = json.loads(Config.objects.all()[0].variables)
     try:
         return variables['multipliers'][mult]
     except KeyError:

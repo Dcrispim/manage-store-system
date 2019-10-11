@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block 'links' %}
+<link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
+
+{% endblock 'links' %}
+
+
+{% block 'scripts' %}
+<script src="{% static 'operation.js' %}">
+</script>
+{% endblock 'scripts' %}
+
+{% block 'title' %}
+Compra e Venda
+{% endblock 'title' %}
+
+{% block 'header' %}
+<h1>
+    Compra e Venda
+    <small>Listagem</small>
+</h1>
+<ol class="breadcrumb">
+    <li><a href="{% url 'home' %}"><i class="fa fa-dashboard"></i> Home</a></li>
+    <li class="active">Compra e Venda</li>
+</ol>
+{% endblock 'header' %}
+
+{% block 'content' %}
+
+<div class="form-group">
+    <div class="input-group">
+        <div class="input col-md-2 mr-2">
+            <samll>Créditos</samll><input class="form-control" type="number" readonly value="{{total_cred}}">
+        </div>
+        <div class="input col-md-2 mr-2">
+            <samll>Debitos</samll><input class="form-control" type="number" readonly value="{{total_deb}}">
+        </div>
+        <div class="input col-md-2 mr-2">
+            <samll>Total</samll><input class="form-control" type="number" readonly value="{{total}}">
+        </div>
+
+        <div class="col-md-6 ">
+            <form class="input" style="justify-content:baseline" method="GET">
+                <div class="input col-md-5">
+                    <input class="form-control" name="date-in" type="date" placeholder="Inicio">
+                </div>
+                <div class="input col-md-5">
+                    <input class="form-control" name="date-out" type="date" placeholder="Fim">
+                </div>
+                <button class="btn btn-info "><i class="fa fa-search"></i></button>
+            </form>
+        </div>
+    </div>
+    <table id="tb" class="table table-bordered table-hover dataTable">
+        <thead class="">
+            <tr>
+                <th class="">Data</th>
+                <th class="">Origem/Destino</th>
+                <th>Tipo</th>
+                <th>Desconto</th>
+                <th>Total</th>
+                <th>Status <a class="btn text-success" onclick="setForm()"><i class="fa fa-plus-square"></i></a></th>
+            </tr>
+        </thead>
+        <tbody class="scroll">
+            <tr id='tr-form'>
+                <form id="op-form" method="POST">
+                    {% csrf_token %}
+                    <td><input name="date" class="form-control" type="date" placeholder="Data"></td>
+                    <td><input name="description" class="form-control" type="text" placeholder="Descrição"></td>
+                    <td><input name="orig_dest" class="form-control" type="text" placeholder="Origem/Destino"></td>
+                    <td><input id="ipt-credit" name="credit" class="form-control" type="number" min=0 step="0.01"
+                            placeholder="Crédito"></td>
+                    <td><input id="ipt-debt" name="debt" class="form-control" type="number" min=0 step="0.01"
+                            placeholder="Débito"></td>
+                    <td>
+                        <div class="input">
+                            <select class="form-control" id="status" name="status">
+                                {% for item in form.status %}
+                                {{item}}
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <button type="button" onClick="opSubmit()" class="btn btn-success"> <i
+                                class="fa fa-save"></i></button>
+                        <button type="reset" class="btn btn-danger"> <i class="fa fa-times"></i></button>
+                    </td>
+
+                </form>
+            </tr>
+            {% for op in list_sb %}
+            <tr key="{{op.pk}}">
+                <td>{{op.date.day}}/{{op.date.month}}/{{op.date.year}}</td>
+                <td>{{op.client}}</td>
+                <td>{% if op.mode == 0 %}
+                    VENDA
+                    {% elif op.mode == 1%}
+                    COMPRA
+                    {% endif %}</td>
+                <td id="credit{{op.pk}}">{{op.off}}</td>
+                <td id="debt{{op.pk}}" class="text-{% if op.mode == 0 %}success{% else %}danger{% endif %}"><strong>{{op.amount}}</strong></td>
+                <td>{% if op.status == 0 %}
+                    OK
+                    {% elif op.status == 1%}
+                    PENDENTE
+                    {% elif op.status == '2'%}
+                    CANCELADO
+                    {% endif %}</td>
+            </tr>
+            {% endfor %}
+
+        </tbody>
+    </table>
+</div>
+{% endblock 'content' %}
