@@ -52,7 +52,7 @@ class SalesOrBuy(models.Model):
 class Service(models.Model):
     description = models.CharField(max_length=100)
     labor = models.DecimalField(max_digits=8, decimal_places=2)
-    off   = models.DecimalField(max_digits=5, null=True, blank=True, default=0, decimal_places=4)
+    off   = models.DecimalField(max_digits=5, null=True, default=0, decimal_places=4)
     amount = models.DecimalField(max_digits=8, default=0, decimal_places=2)
     client = models.ForeignKey(Client, null=True, on_delete=models.PROTECT)
     status = models.IntegerField(choices = STATUS_CHOICES, default='PENDENTE')

@@ -13,17 +13,17 @@
 {% endblock 'scripts' %}
 
 {% block 'title' %}
-Compra e Venda
+Serviços
 {% endblock 'title' %}
 
 {% block 'header' %}
 <h1>
-    Compra e Venda
+    Serviços
     <small>Listagem</small>
 </h1>
 <ol class="breadcrumb">
     <li><a href="{% url 'home' %}"><i class="fa fa-dashboard"></i> Home</a></li>
-    <li class="active">Compra e Venda</li>
+    <li class="active">Serviços</li>
 </ol>
 {% endblock 'header' %}
 
@@ -57,8 +57,8 @@ Compra e Venda
         <thead class="">
             <tr>
                 <th class="">Data</th>
-                <th class="">Origem/Destino</th>
-                <th>Tipo</th>
+                <th class="">Serviço</th>
+                <th>Cliente</th>
                 <th>Desconto</th>
                 <th>Total</th>
                 <th>Status <a class="btn text-success" onclick="setForm()"><i class="fa fa-plus-square"></i></a></th>
@@ -90,17 +90,17 @@ Compra e Venda
 
                 </form>
             </tr>
-            {% for op in list_sb %}
+            {% for op in list_sv %}
             <tr key="{{op.pk}}">
                 <td>{{op.date.day}}/{{op.date.month}}/{{op.date.year}}</td>
-                <td><a href="/salebuy/{{op.pk}}">{{op.client}}</a></td>
+                <td>{{op.client}}</td>
                 <td>{% if op.mode == 0 %}
                     VENDA
                     {% elif op.mode == 1%}
                     COMPRA
                     {% endif %}</td>
                 <td id="credit{{op.pk}}">{{op.off}}</td>
-                <td id="debt{{op.pk}}" class="text-{% if op.mode == 0 %}success{% else %}danger{% endif %}"><strong>{{op.amount}}</strong></td>
+                <td id="debt{{op.pk}}" class="text-success"><strong>{{op.amount}}</strong></td>
                 <td>{% if op.status == 0 %}
                     OK
                     {% elif op.status == 1%}
@@ -112,9 +112,6 @@ Compra e Venda
             {% endfor %}
 
         </tbody>
-
     </table>
-    {% if gettext('Hello World!') 'IDC'|count %}Abeelha{% endif %}
-    
 </div>
 {% endblock 'content' %}

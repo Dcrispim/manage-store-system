@@ -290,6 +290,19 @@ def listSaleBuy(request):
     }
 
     return render(request, 'list_salebuy.html',data)
+
+@login_required
+def listService(request):
+    search = request.GET.get('search')
+    list_service = Service.objects.all()
+
+    data = {
+        'list_sv':list_service
+    }
+
+    return render(request, 'list_service.html',data)
+
+
 @login_required
 def detailSaleBuy(request, pk):
     search = request.GET.get('search')
