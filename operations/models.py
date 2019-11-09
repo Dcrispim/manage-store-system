@@ -45,18 +45,19 @@ class SalesOrBuy(models.Model):
     off   = models.DecimalField(max_digits=3, decimal_places=2, default=0)
     amount = models.DecimalField(max_digits=8, default=0, decimal_places=2)
 
+
     def __str__(self):
         mode = 'VENDA' if self.mode==0 else 'COMPRA'
         return str(f'{self.pk} - {self.client} - ({mode})')
 
 class Service(models.Model):
     description = models.CharField(max_length=100)
-    labor = models.DecimalField(max_digits=8, decimal_places=2)
-    off   = models.DecimalField(max_digits=5, null=True, default=0, decimal_places=4)
-    amount = models.DecimalField(max_digits=8, default=0, decimal_places=2)
-    client = models.ForeignKey(Client, null=True, on_delete=models.PROTECT)
-    status = models.IntegerField(choices = STATUS_CHOICES, default='PENDENTE')
-    date   = models.DateField(auto_now=False, auto_now_add=False)
+    labor       = models.DecimalField(max_digits=8, decimal_places=2)
+    off         = models.DecimalField(max_digits=5, null=True, default=0, decimal_places=4)
+    amount      = models.DecimalField(max_digits=8, default=0, decimal_places=2)
+    client      = models.ForeignKey(Client, null=True, on_delete=models.PROTECT)
+    status      = models.IntegerField(choices = STATUS_CHOICES, default='PENDENTE')
+    date        = models.DateField(auto_now=False, auto_now_add=False)
 
     def __str__(self):
         return self.description
@@ -64,8 +65,8 @@ class Service(models.Model):
 class CartItem(models.Model):
     product = models.ForeignKey(Product, null=True, on_delete=models.PROTECT)
     qtd = models.IntegerField( default=0, validators=[ MinValueValidator(0) ] )
-    sbid = models.ForeignKey(SalesOrBuy, null=True, blank=True, on_delete=models.CASCADE)
-    svid = models.ForeignKey(Service, null=True, blank=True ,on_delete=models.CASCADE)
+    sbid = models.ForeignKey(SalesOrBuy, null=True, blank=True, on_delete=models.CASCADE, related_name="cart_sb")
+    svid = models.ForeignKey(Service, null=True, blank=True ,on_delete=models.CASCADE, related_name="cart_s")
     op_type = models.IntegerField(choices = [(0,'COMPVEND'), (1,'ITEM'), (2,'MATERIAL')], default=0)
 
     def __str__(self):
@@ -77,7 +78,7 @@ class CartItem(models.Model):
             mode = 'ERRO'
             ID = 0
 
-        mode = {0:'COMPVEND', 1:'Service-MATERIAL', 2:'Servce-ITEM'}
+        mode = {0:'COMPVEND', 1:'Service-ITEM', 2:'Servce-MATERIAL'}
         return str(f'({mode[self.op_type]}:{ID}) {self.product.name}')
 
 

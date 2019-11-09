@@ -61,35 +61,10 @@ Compra e Venda
                 <th>Tipo</th>
                 <th>Desconto</th>
                 <th>Total</th>
-                <th>Status <a class="btn text-success" onclick="setForm()"><i class="fa fa-plus-square"></i></a></th>
+                <th>Status</th>
             </tr>
         </thead>
         <tbody class="scroll">
-            <tr id='tr-form'>
-                <form id="op-form" method="POST">
-                    {% csrf_token %}
-                    <td><input name="date" class="form-control" type="date" placeholder="Data"></td>
-                    <td><input name="description" class="form-control" type="text" placeholder="Descrição"></td>
-                    <td><input name="orig_dest" class="form-control" type="text" placeholder="Origem/Destino"></td>
-                    <td><input id="ipt-credit" name="credit" class="form-control" type="number" min=0 step="0.01"
-                            placeholder="Crédito"></td>
-                    <td><input id="ipt-debt" name="debt" class="form-control" type="number" min=0 step="0.01"
-                            placeholder="Débito"></td>
-                    <td>
-                        <div class="input">
-                            <select class="form-control" id="status" name="status">
-                                {% for item in form.status %}
-                                {{item}}
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <button type="button" onClick="opSubmit()" class="btn btn-success"> <i
-                                class="fa fa-save"></i></button>
-                        <button type="reset" class="btn btn-danger"> <i class="fa fa-times"></i></button>
-                    </td>
-
-                </form>
-            </tr>
             {% for op in list_sb %}
             <tr key="{{op.pk}}">
                 <td>{{op.date.day}}/{{op.date.month}}/{{op.date.year}}</td>
@@ -99,8 +74,8 @@ Compra e Venda
                     {% elif op.mode == 1%}
                     COMPRA
                     {% endif %}</td>
-                <td id="credit{{op.pk}}">{{op.off}}</td>
-                <td id="debt{{op.pk}}" class="text-{% if op.mode == 0 %}success{% else %}danger{% endif %}"><strong>{{op.amount}}</strong></td>
+                <td >{{op.off}}</td>
+                <td class="text-{% if op.mode == 0 %}success{% else %}danger{% endif %}"><strong>{{op.amount}}</strong></td>
                 <td>{% if op.status == 0 %}
                     OK
                     {% elif op.status == 1%}
@@ -114,7 +89,7 @@ Compra e Venda
         </tbody>
 
     </table>
-    {% if gettext('Hello World!') 'IDC'|count %}Abeelha{% endif %}
+    
     
 </div>
 {% endblock 'content' %}

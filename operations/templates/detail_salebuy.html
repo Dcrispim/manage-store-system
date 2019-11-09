@@ -30,13 +30,11 @@ Sale or Buy
       <div id="info_client" class="col-sm-12">
 
         {% csrf_token %}
-        <div class="row input-group col-md-12">
-          <div class="row input col-md-12">
-            <input class="form-control" id="client" name="client" readOnly
+        
+            <input class="row form-control" id="client" name="client" readOnly
               value="{{sb.details.client}}"
             />
-          </div>
-        </div>
+        
         <div class="row form-group">
           <div class="row input col-md-5">
             <input id="date" 
@@ -48,13 +46,13 @@ Sale or Buy
             readOnly>
           </div>
           <div class="row col-md-4 input">
-            <input class="form-control" id="status" name="status" 
+            <input class="form-control" 
             value = "{% if sb.details.status == 0 %} PENDENTE{% elif sb.details.status == 1 %}OK {% elif sb.details.status == 2%}CANCELADO{% endif %}" 
             readOnly>
           </div>
 
           <div class="row col-md-4 input ">
-            <input class="form-control" id="status" name="status" 
+            <input class="form-control" 
             value = "{% if sb.details.mode == 0 %} VENDA {% elif sb.details.mode == 1 %}COMPRA{% endif %}" 
             readOnly>
 
@@ -78,7 +76,7 @@ Sale or Buy
             <tr>
               <td>{{item.product}}</td>
               <td>({{item.qtd}})x R${{item.price}}</td>
-              <td id="tot{{item.product.pk}}" onload="mult('tot{{item.product.pk}}',{{item.qtd}},{{item.price}})"></td>
+              <td>{{item.total}}</td>
             </tr>
             {% endfor %}
             
