@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load bootstrap %}
+
+{% block 'links' %}
+<link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'mystrap.css' %}">
+{% endblock 'links' %}
+
+{% block 'title' %}
+Sale or Buy
+{% endblock 'title' %}
+
+{% block 'header' %}
+<h1>
+  {{sb.details.client}}
+  <small>Detalhes</small>
+</h1>
+<ol class="breadcrumb">
+  <li><a href="{% url 'home' %}"><i class="fa fa-dashboard"></i> Home</a></li>
+  <li class="active">Detalhes</li>
+</ol>
+{% endblock 'header' %}
+
+{% block 'content' %}
+<div id="div-errors" class="invisible"></div>
+<div class="row ml-2 mt-2 pr-3">
+  <div id="rigth-pane" class="col-sm-12 col-md-6">
+
+      <div id="info_client" class="col-sm-12">
+
+        {% csrf_token %}
+        
+            <input class="row form-control" id="client" name="client" readOnly
+              value="{{sb.details.client}}"
+            />
+        
+        <div class="row form-group">
+          <div class="row input col-md-5">
+            <input id="date" 
+            value = "{{sb.details.date}}"
+            
+            class="form-control" 
+            data-inputmask="'alias': 'dd/mm/aaaa'" name="date"
+            data-mask
+            readOnly>
+          </div>
+          <div class="row col-md-4 input">
+            <input class="form-control" 
+            value = "{% if sb.details.status == 0 %} PENDENTE{% elif sb.details.status == 1 %}OK {% elif sb.details.status == 2%}CANCELADO{% endif %}" 
+            readOnly>
+          </div>
+
+          <div class="row col-md-4 input ">
+            <input class="form-control" 
+            value = "{% if sb.details.mode == 0 %} VENDA {% elif sb.details.mode == 1 %}COMPRA{% endif %}" 
+            readOnly>
+
+          </div>
+        </div>
+
+
+      </div>
+      <div id=" " class="row pl-3 pr-3 mt-2 scroll1">
+        <table id=" " class="table table-striped">
+          <thead class="thead-dark">
+            <tr>
+              <th scope="col">Produto</th>
+              <th scope="col">Qtd/R$</th>
+              <th scope="col">total</th>
+            </tr>
+          </thead>
+          <tbody>
+           {% for item in sb.cart %}
+              
+            <tr>
+              <td>{{item.product}}</td>
+              <td>({{item.qtd}})x R${{item.price}}</td>
+              <td>{{item.total}}</td>
+            </tr>
+            {% endfor %}
+            
+          </tbody>
+        </table>
+        <input id="input_cart" name="input_cart" class="invisible" readOnly=true></input>
+      </div>
+
+      <div id="menu_close" class="row  form-group box-footer">
+        
+        <div class="col-12 col-md-12 mt-2 row">
+          <div class="col-md-5 row form-group ">
+            <label for="totalop">Desconto</label>
+            <input id="totalop" value="{{ sb.details.off}}" name="amount" readOnly='true' class="form-control">
+          </div>
+          <div class="col-md-6 row form-group">
+            <label for="totalopOff" class="col-md-12">Total</label>
+            <input id="totalopOff" value="{{ sb.details.amount}}" type="number" class="form-control col-md-5"
+              data-toggle="collapse" href="#collapseExample" role="button" readonly>
+            </div>
+          <div class="input-group-btn pull-bottom">
+
+          </div>
+        </div>
+      </div>
+
+  </div>
+</div>
+
+<div id="div-popup" class='row invisible'>
+  <iframe id="iframe-popup" class=" bg-light pt-3 rounded-lg"></iframe>
+</div>
+{% endblock 'content' %}
+
+{% block 'scripts' %}
+<script src="{% static 'datail_salebuy.js' %}"></script>
+{% endblock 'scripts' %}

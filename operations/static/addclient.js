@@ -8,6 +8,11 @@ function closePopUp(){
 function formSubmit(){
     form.submit()
     //closePopUp()
-    Parent.location.reload()
 
+}
+
+function Refresh(){
+    Parent.console.log('1')
+    Parent.location.href("/salebuy/Teste")
+    Parent.console.log('2')
 }

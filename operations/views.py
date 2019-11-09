@@ -42,7 +42,7 @@ def salebuy(request):
             pkId = i["product"]
 
         ID = Product.objects.get(pk=pkId)
-        _addCartItem(pkId, i["qtd"], OPID, 0)
+        return _addCartItem(pkId, i["qtd"], OPID, 0)
 
     def updateStock(id, qtd):
         Stock.objects.filter(pk=id).update(qtd=qtd)
@@ -79,8 +79,8 @@ def salebuy(request):
                 qtd = stockItem.qtd + item["qtd"]
                 updateStock(stockItem.id, qtd)
                 total = total + (item["qtd"] * item["price"])
-
-            addSBCartItem(item, opid.id)
+            print('OK')
+            print(addSBCartItem(item, opid.id))
         return total
 
     def addVenda(opId):
@@ -111,7 +111,6 @@ def salebuy(request):
         try:
             if len(errors) == 0:
                 opid = form.save()
-                off = float(request.POST["off"]) / 100
                 if form["mode"].value() == "0":
                     total = addVenda(opid)
                     _addOperation(
@@ -122,7 +121,7 @@ def salebuy(request):
                             "debt": 0,
                             "status": opid.status,
                             "date": opid.date,
-                            "off": off,
+                            "off": opid.off,
                         }
                     )
                 elif form["mode"].value() == "1":
@@ -135,13 +134,15 @@ def salebuy(request):
                             "debt": total,
                             "status": opid.status,
                             "date": opid.date,
-                            "off": off,
+                            "off": opid.off,
                         }
                     )
                 setList()
                 return redirect("salebuy")
         except KeyError as erro:
             errors.append(erro)
+    else:
+        print(errors)
     data = {"form": form, "stock": stock_list, "errors": errors, 
             "products": list_prod}
     return render(request, "salebuy.html", data)
@@ -219,7 +220,6 @@ def service(request):
         return totalitems
 
     setList()
-    print(request.POST)
     print(service_items)
     if service_form.is_valid():
         total = 0
@@ -279,6 +279,73 @@ def operation(request):
 
     return render(request, "operation.html", data)
 
+
+@login_required
+def listSaleBuy(request):
+    search = request.GET.get('search')
+    list_sale_buy = []
+    for item in SalesOrBuy.objects.all():
+        dct = {
+            'pk': item.pk,
+            'client':item.client,
+            'status': item.status,
+            'date':item.date,
+            'mode':item.mode,
+            'amount':item.amount,
+            'off': item.off*100
+        }
+        list_sale_buy.append(dct)
+
+
+    data = {
+        'list_sb':list_sale_buy
+    }
+
+    return render(request, 'list_salebuy.html',data)
+
+@login_required
+def listService(request):
+    search = request.GET.get('search')
+    list_service = Service.objects.all()
+
+    data = {
+        'list_sv':list_service
+    }
+
+    return render(request, 'list_service.html',data)
+
+
+@login_required
+def detailSaleBuy(request, pk):
+    search = request.GET.get('search')
+    cart = []
+    for item in CartItem.objects.filter(sbid=pk):
+        price = Stock.objects.get(product=item.product).sale_price
+        cart_item = {'product':item.product,
+            'qtd': item.qtd,
+            'price':price,
+            'total':price*item.qtd
+        }
+        cart.append(cart_item)
+    details = {
+            'client':SalesOrBuy.objects.get(pk=pk).client,
+            'date': SalesOrBuy.objects.get(pk=pk).date,
+            'off':SalesOrBuy.objects.get(pk=pk).off,
+            'status':SalesOrBuy.objects.get(pk=pk).status,
+            'mode':SalesOrBuy.objects.get(pk=pk).mode,
+            'amount': SalesOrBuy.objects.get(pk=pk).amount
+        }
+        
+    details['off'] = details['off']*100
+    detail_sale_buy = {'details': details,
+                        'cart': cart
+                        }
+
+    data = {
+        'sb':detail_sale_buy
+    }
+
+    return render(request, 'detail_salebuy.html',data)
 #########|#########|#########|#########|#########|#########|#########|#########|
 def _addOperation(item):
     

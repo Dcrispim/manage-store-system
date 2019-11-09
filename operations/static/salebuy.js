@@ -29,6 +29,7 @@ let BtnAddClient = document.getElementById('btn_add-client')
 let popUpWindow = document.getElementById('iframe-popup')
 var DivpopUpWindow = document.getElementById('div-popup')
 
+
 let H = tamanho().h
 let W = tamanho().w
 
@@ -188,6 +189,9 @@ function setTotalOp() {
     totalop.value = `${total.toFixed(2)}`
     totalopOff.value = `${((total * (1 - desc))).toFixed(2)}`
     saveLostCart()
+    if (isNaN(parseFloat(offSalebuy.value)) || parseFloat(offSalebuy.value)<0){
+        offSalebuy.value = 0
+    }
 }
 
 function removeCartItem(id) {
@@ -304,7 +308,7 @@ function formSubmit() {
 
             let ok = confirm('Deseja Finalizar a compra')
             if (ok == true) {
-                offSalebuy.value = parseFloat(offSalebuy.value) || 0
+                offSalebuy.value = (parseFloat(offSalebuy.value) || 0)/100
                 form.submit()
             }
         }
@@ -342,3 +346,4 @@ window.addEventListener('load', () => {
 
     document.getElementsByTagName('body')[0].style.height = '300px'
 })
+DivpopUpWindow.addEventListener('change', () => window.location.reload())

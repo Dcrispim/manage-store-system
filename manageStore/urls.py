@@ -16,12 +16,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path,include
 from operations import urls as op_urls
+from operations.api import urls as api_urls
 
 
 
 urlpatterns = [
     path('', include(op_urls), name='operations'),
-    path('api/', include('operations.api.urls'), name='api'),
+    path('api/', include(api_urls), name='api'),
     path('admin/', admin.site.urls),
     path('accounts/', include('django.contrib.auth.urls')),
 ]

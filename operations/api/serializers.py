@@ -1,7 +1,31 @@
 from rest_framework import serializers
-from operations.models import SalesOrBuy
+from operations.models import SalesOrBuy, CartItem, Product, Service, Operation, Client
+
+class ProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = '__all__'
+
+class ClientSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Client
+        fields = '__all__'
+
+
+class CartItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        product = ProductSerializer(many=True, read_only=False)
+        model = CartItem
+        fields = [
+            'product',
+            'qtd',
+            'op_type'
+        ]
+
 
 class SaleOrBuySerializer(serializers.ModelSerializer):
+    cart_sb = CartItemSerializer(many=True)
+
     class Meta:
         model = SalesOrBuy
         fields = [
@@ -10,18 +34,32 @@ class SaleOrBuySerializer(serializers.ModelSerializer):
             'status',
             'date',
             'off',
-            'amount'
+            'amount',
+            "cart_sb"
         ]
 
 
+class ServiceSerializer(serializers.ModelSerializer):
+    cart_s = CartItemSerializer(many=True)
 
-class CartItemSerializer(serializers.ModelSerializer):
     class Meta:
-        model = SalesOrBuy
+        model = Service
         fields = [
-            'product',
-            'qtd',
-            'sbid',
-            'svid',
-            'op_type',
+            "description",
+            "labor",
+            "off",
+            "amount",
+            "client",
+            "status",
+            "date",
+            "cart_s"
         ]
+
+
+
+class OperationSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Operation
+        fields = '__all__'
+
