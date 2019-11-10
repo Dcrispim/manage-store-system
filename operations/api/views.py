@@ -224,26 +224,17 @@ class ServiceViewSet(APIView):
                 date = data['date']
                 off = data['off']
                 cart = data['cart_s']
-
-
-                tot = float(labor)
                 
                 try:
                     
                     for item in cart:
                         StockItem = Stock.objects.filter(product=item['product'])[0]
-                        tot += float(StockItem.sale_price*item['qtd'])
-
                         if StockItem.qtd<item['qtd']:
-                            print(StockItem.product, StockItem.qtd, item['qtd'])
                             msg.append(f'Insufficient Sotck: {item["product"]}')
                             return False, msg
                         
 
                 
-                    if float(tot) != float(amount):
-                        msg.append('Amount Incorrect ')
-                        return False, msg
                 except Exception as err:
                     msg.append(f'{err}')
                     return False, msg
@@ -262,7 +253,7 @@ class ServiceViewSet(APIView):
         if valid[0]:
             client = Client.objects.filter(pk=dt['client'])[0]
             old_qtd = {}
-            amount = dt['labor']
+            amount = float(dt['labor'])
             svc = Service.objects.create(
                                             description = dt['description'],
                                             labor = dt['labor'],
@@ -304,8 +295,7 @@ class ServiceViewSet(APIView):
                                             date=dt["date"],
                                           )
             
-            output = request.data
-            output['id'] = svc.pk
+            output = ServiceSerializer(svc).data
             output['response'] = {'status':200, 'msg':valid[1]}
             return Response(output)
         else:
