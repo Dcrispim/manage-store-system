@@ -39,7 +39,6 @@ def _setMultiplier(mult, value):
         return True
 
 
-
 def _getMultiplier(mult):
     
     try:
@@ -50,13 +49,6 @@ def _getMultiplier(mult):
     except:
         _setMultiplier(mult,0)
         return 0 
-
-    
-    
-
-
-
-
 
 
 # Create your views here.
@@ -119,6 +111,9 @@ class SaleOrBuyViewSet(APIView):
                 msg.append(f'Missing Key:{err}')
                 return False, msg
 
+
+
+
         salebuy = SalesOrBuy.objects.all()
         valid = validate(request.data)
         if valid[0]:
@@ -154,11 +149,11 @@ class SaleOrBuyViewSet(APIView):
 
                     sale_price  = stockItem.sale_price
                     new_qtd     = stockItem.qtd + i['qtd']
-                    mult        = 1 + _getMultiplier('sale_price')
-                    rangeDiff   = 1 + _getMultiplier('range')
+                    mult        = float(1 + _getMultiplier('sale_price'))
+                    rangeDiff   = float(1 + _getMultiplier('range'))
 
-                    if float(i['price'])*mult > float(sale_price*rangeDiff):
-                        sale_price = i['price']*mult
+                    if float(i['price'])*mult > float(sale_price)*rangeDiff:
+                        sale_price = float(i['price'])*mult
                     
                     Stock.objects.filter(product=i['product']).update(qtd=new_qtd, sale_price=sale_price)
 
@@ -185,8 +180,7 @@ class SaleOrBuyViewSet(APIView):
                                             date=dt["date"],
                                           )
 
-            output = request.data
-            output['id'] = item.pk
+            output = SaleOrBuySerializer(item).data
             output['response'] = {'status':200, 'msg':valid[1]}
             return Response(output)
         else:
@@ -229,7 +223,6 @@ class ServiceViewSet(APIView):
                 status = data['status']
                 date = data['date']
                 off = data['off']
-                amount = data['amount']
                 cart = data['cart_s']
 
 
@@ -269,11 +262,12 @@ class ServiceViewSet(APIView):
         if valid[0]:
             client = Client.objects.filter(pk=dt['client'])[0]
             old_qtd = {}
+            amount = dt['labor']
             svc = Service.objects.create(
                                             description = dt['description'],
                                             labor = dt['labor'],
                                             off = dt['off'],
-                                            amount = dt['amount'],
+                                            amount = amount,
                                             client = client,
                                             status = dt['status'],
                                             date = dt['date'],
@@ -294,12 +288,17 @@ class ServiceViewSet(APIView):
                 old_qtd[i['product']] = stockItem.qtd
                 new_qtd = stockItem.qtd - i['qtd']
                 Stock.objects.filter(product=i['product']).update(qtd=new_qtd)
+
+                amount += float(stockItem.sale_price)*float(i['qtd'])
+
+
+            Service.objects.filter(pk=svc.pk).update(amount=amount)
             
             description = f'IDS{svc.pk}'
             op  = Operation.objects.create(
                                             description=description,
                                             orig_dest=client.name,
-                                            credit=float(dt['amount']) * (1 - float(dt['off'])),
+                                            credit=float(amount) * (1 - float(dt['off'])),
                                             debt=0,
                                             status=dt["status"],
                                             date=dt["date"],
@@ -386,9 +385,13 @@ class ProductViewSet(APIView):
     def validate(self, data):
             msg = []
             try:
-                name= data['name']
-                brand =  data['brand']
-                unit = data['unit']
+                name= data['name'].upper()
+                brand =  data['brand'].upper()
+                unit = data['unit'].upper()
+
+                if len(Product.objects.filter(name=name, brand=brand))>0:
+                    msg.append('Product Already registered')
+                    return False, msg
 
                 return True,['success']
 
@@ -421,9 +424,9 @@ class ProductViewSet(APIView):
         if valid[0]:
             
             prod  = Product.objects.create(
-                                            name=dt['name'],
-                                            brand=dt['brand'],
-                                            unit=dt['unit'],
+                                            name=dt['name'].upper(),
+                                            brand=dt['brand'].upper(),
+                                            unit=dt['unit'].upper(),
                                           )
 
             stock = Stock.objects.create(
@@ -433,7 +436,8 @@ class ProductViewSet(APIView):
 
                                         )
 
-            output = request.data
+            output = ProductSerializer(prod).data
+            
             output['response'] = {'status':200, 'msg':valid[1]}
             return Response(output)
         else:
@@ -502,7 +506,7 @@ class ClientViewSet(APIView):
                                             birth = dt['birth']
                                           )
 
-            output = request.data
+            output = ClientSerializer(client).data
             output['response'] = {'status':200, 'msg':valid[1]}
             return Response(output)
         else:

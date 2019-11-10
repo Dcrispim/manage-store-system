@@ -35,6 +35,7 @@ class SaleOrBuySerializer(serializers.ModelSerializer):
     class Meta:
         model = SalesOrBuy
         fields = [
+            'id',
             'client',
             'mode',
             'status',
@@ -51,6 +52,7 @@ class ServiceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Service
         fields = [
+            'id',
             "description",
             "labor",
             "off",
