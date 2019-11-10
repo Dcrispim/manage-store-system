@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from operations.models import SalesOrBuy, CartItem, Product, Service, Operation, Client
+from operations.models import SalesOrBuy, CartItem, Product, Service, Operation, Client, Stock
 
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
@@ -9,6 +9,12 @@ class ProductSerializer(serializers.ModelSerializer):
 class ClientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Client
+        fields = '__all__'
+
+
+class StockSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Stock
         fields = '__all__'
 
 

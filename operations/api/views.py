@@ -9,8 +9,49 @@ from .serializers import (
                             ProductSerializer, 
                             ServiceSerializer, 
                             OperationSerializer,
-                            ClientSerializer
+                            ClientSerializer,
+                            StockSerializer
                         )
+
+
+import json
+
+
+def __get_amount(cart, StockLock=True):
+    amount = 0
+    msg = []
+    for item in cart:
+        StockItem = Stock.objects.filter(product=item['product'])[0]
+        amount += StockItem.sale_price*item['qtd']
+
+        if StockLock and StockItem.qtd<item['qtd']:
+            msg.append(f'{Stock.product.name}')
+            return False, msg
+
+
+
+def _getMultiplier(mult):
+    try:
+        variables = json.loads(Config.objects.all()[0].variables)
+    except:
+        Config.objects.create(variables="{}")
+        variables = json.loads(Config.objects.all()[0].variables)
+    try:
+        return variables['multipliers'][mult]
+    except KeyError:
+        try:
+            if not (type(variables['multipliers']) == dict):
+                variables['multipliers'] = {}
+            
+            variables['multipliers'].update({mult:0})
+            return variables['multipliers'][mult]
+        except KeyError:
+            return 0
+            
+    except:
+        return 0
+
+
 
 
 
@@ -43,10 +84,8 @@ class SaleOrBuyViewSet(APIView):
                 status = data['status']
                 date = data['date']
                 off = data['off']
-                amount = data['amount']
                 cart = data['cart_sb']
-                cart['product']
-                cart['qtd']
+
                 if len(cart)<=0:
                     msg.append('Empty Cart')
                     return False, msg  
@@ -62,20 +101,18 @@ class SaleOrBuyViewSet(APIView):
                             msg.append('Insufficient Sotck ')
                             return False, msg
                         
-
-                
-                    if float(tot) != float(amount):
-                        msg.append('Amount Incorrect ')
-                        return False, msg
-                except:
-                    msg.append('Missing Key')
+                        if mode == 1:
+                            item['price']
+                        
+                except Exception as err:
+                    msg.append(f'{err}')
                     return False, msg
 
 
                 return True,msg
 
-            except KeyError:
-                msg.append('Missing Key')
+            except KeyError as err:
+                msg.append(f'Missing Key:{err}')
                 return False, msg
 
         salebuy = SalesOrBuy.objects.all()
@@ -89,10 +126,10 @@ class SaleOrBuyViewSet(APIView):
 
             item = SalesOrBuy.objects.create( client = client, date = dt['date'],
                                               mode = dt['mode'], status=dt['status'],
-                                              off = dt['off'], amount = dt['amount']
+                                              off = dt['off'], amount = 0
                                               
                                             )
-            
+            amount = 0
             for i in dt['cart_sb']:
                 product = Product.objects.filter(pk=i['product'])[0]
                 CartItem.objects.create( product=product, 
@@ -101,21 +138,38 @@ class SaleOrBuyViewSet(APIView):
                                          op_type=0)
                 
                 
-
                 stockItem = Stock.objects.get(product=i['product'])
-
                 old_qtd[i['product']] = stockItem.qtd
-                new_qtd = stockItem.qtd - i['qtd'] if dt['mode'] == 0 else stockItem.qtd + i['qtd']
-                Stock.objects.filter(product=i['product']).update(qtd=new_qtd)
 
+
+                if dt['mode'] == 0:
+                    new_qtd = stockItem.qtd - i['qtd'] 
+                    Stock.objects.filter(product=i['product']).update(qtd=new_qtd)
+                
+                elif dt['mode'] == 1:
+
+                    sale_price  = stockItem.sale_price
+                    new_qtd     = stockItem.qtd + i['qtd']
+                    mult        = 1 + _getMultiplier('sale_price')
+                    rangeDiff   = 1 + _getMultiplier('range')
+
+                    if float(i['price'])*mult > float(sale_price*rangeDiff):
+                        sale_price = i['price']*mult
+                    
+                    Stock.objects.filter(product=i['product']).update(qtd=new_qtd, sale_price=sale_price)
+
+                amount += Stock.objects.get(product=i['product']).sale_price*i['qtd']
+
+            
+            SalesOrBuy.objects.filter(pk=item.pk).update(amount=amount)
             
             description = f'IDC{item.pk}' if dt['mode']==1 else f'IDV{item.pk}'
 
             if dt['mode'] == 0:
                 debt = 0
-                credit = dt['amount']
+                credit = float(amount)
             elif dt['mode'] == 1:
-                debt = dt['amount']
+                debt = float(amount)
                 credit = 0
 
             op  = Operation.objects.create(
@@ -128,7 +182,7 @@ class SaleOrBuyViewSet(APIView):
                                           )
 
             output = request.data
-            output['id'] = svc.pk
+            output['id'] = item.pk
             output['response'] = {'status':200, 'msg':valid[1]}
             return Response(output)
         else:
@@ -368,6 +422,13 @@ class ProductViewSet(APIView):
                                             unit=dt['unit'],
                                           )
 
+            stock = Stock.objects.create(
+                                            product=prod,
+                                            qtd = 0, 
+                                            sale_price=0,
+
+                                        )
+
             output = request.data
             output['response'] = {'status':200, 'msg':valid[1]}
             return Response(output)
@@ -457,3 +518,48 @@ class ClientViewSet(APIView):
                                                     address = dt['address'],
                                                     birth = dt['birth']
             )
+
+
+
+
+
+
+class StockViewSet(APIView):
+    erializer_class = ServiceSerializer
+    queryset = Service.objects.all()
+
+    lookup_field = 'pk'
+    def validate(self, data):
+            msg = []
+            try:
+                name= data['name']
+                email =  data['email']
+                cell = data['cell']
+                address = data['address']
+                birth = data['birth']
+
+                return True,['success']
+
+            except KeyError as err:
+                msg.append(f'Missing Key: {err}')
+                return False, msg
+
+    def get(self, request, pk=None):
+        
+        if pk == None:
+            stock = Stock.objects.all()
+            serializer = StockSerializer(stock, many=True)
+        else:
+            try:
+                stock = Stock.objects.get(pk=pk)
+                serializer = StockSerializer(stock)
+            except:
+                return Response(404)
+
+        
+        return Response(serializer.data)
+    
+
+
+
+
