@@ -96,5 +96,9 @@ class Operation(models.Model):
         return self.description
 
 class Config(models.Model):
-    variables = models.TextField(default="{}", blank=True, null=True)
+    value_type = models.CharField(max_length=10, default="float")
+    name = models.CharField(max_length=30)
+    value = models.TextField(blank=True, null=True)
+
+
     

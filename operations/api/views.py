@@ -29,27 +29,31 @@ def __get_amount(cart, StockLock=True):
             return False, msg
 
 
+def _setMultiplier(mult, value):
+    query = Config.objects.filter(name=str(mult).lower())
+    if len(query)>0:
+        query.update(value=value)
+        return True
+    else:
+        Config.objects.create(value_type=str(type(value)), value = str(value), name=mult )
+        return True
+
+
 
 def _getMultiplier(mult):
+    
     try:
-        variables = json.loads(Config.objects.all()[0].variables)
+        v = Config.objects.filter(name=mult)[0]
+
+        return float(v.value)
+
     except:
-        Config.objects.create(variables="{}")
-        variables = json.loads(Config.objects.all()[0].variables)
-    try:
-        return variables['multipliers'][mult]
-    except KeyError:
-        try:
-            if not (type(variables['multipliers']) == dict):
-                variables['multipliers'] = {}
-            
-            variables['multipliers'].update({mult:0})
-            return variables['multipliers'][mult]
-        except KeyError:
-            return 0
-            
-    except:
-        return 0
+        _setMultiplier(mult,0)
+        return 0 
+
+    
+    
+
 
 
 
