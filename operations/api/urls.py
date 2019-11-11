@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path
-from .views import SaleOrBuyViewSet, ServiceViewSet, OperationViewSet, ProductViewSet, ClientViewSet, StockViewSet
+from .views import SaleOrBuyViewSet, ServiceViewSet, OperationViewSet, ProductViewSet, ClientViewSet, StockViewSet, SummaryViewSet
 
 
 
@@ -23,6 +23,8 @@ urlpatterns = [
 
     path('stock/<int:pk>',StockViewSet.as_view(), name='api-stock'),
     path('stock/',StockViewSet.as_view(), name='api-stock'),
+
+    path('summary/',SummaryViewSet.as_view(), name='api-summary'),
 
 
 

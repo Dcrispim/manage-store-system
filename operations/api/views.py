@@ -518,13 +518,8 @@ class ClientViewSet(APIView):
             )
 
 
-
-
-
-
 class StockViewSet(APIView):
-    erializer_class = ServiceSerializer
-    queryset = Service.objects.all()
+    queryset = Stock.objects.all()
 
     lookup_field = 'pk'
     def validate(self, data):
@@ -556,7 +551,27 @@ class StockViewSet(APIView):
 
         
         return Response(serializer.data)
-    
+
+
+
+
+
+
+class SummaryViewSet(APIView):
+    queryset = Operation.objects.all()
+
+    lookup_field = 'pk'
+
+    def get(self, request):
+        output = {
+                    'credit':706,
+                    'debt':850
+                 }
+
+        stock = Stock.objects.all()
+        serializer = StockSerializer(stock, many=True)
+        
+        return Response(output)
 
 
 

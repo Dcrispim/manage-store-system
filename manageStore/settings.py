@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'bootstrapform',
     'rest_framework',
     'operations',
+    'corsheaders'
 ]
 
 REST_FRAMEWORK = {
@@ -59,12 +60,20 @@ REST_FRAMEWORK = {
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware'
 ]
+
+MIDDLEWARE_CLASSES = (
+
+    'operations.api.CorsMiddleware' 
+)
+
+
 
 ROOT_URLCONF = 'manageStore.urls'
 
@@ -140,3 +149,5 @@ STATICFILES_DIRS = ['static']
 LOGIN_REDIRECT_URL = '/'
 
 LOGOUT_REDIRECT_URL = '/accounts/login'
+
+CORS_ORIGIN_ALLOW_ALL = True
