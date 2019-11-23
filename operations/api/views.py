@@ -563,9 +563,22 @@ class SummaryViewSet(APIView):
     lookup_field = 'pk'
 
     def get(self, request):
-        output = {
-                    'credit':706,
-                    'debt':850
+        output ={
+                    'present':{
+                                'pending':{
+                                        'credit':706,
+                                        'debt':850
+                                },
+                                'done':{
+                                        'credit':706,
+                                        'debt':850
+                                },
+                                'cancel':{
+                                        'credit':706,
+                                        'debt':850
+                                }
+                }
+                    
                  }
 
         stock = Stock.objects.all()
