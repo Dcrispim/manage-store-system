@@ -1,11 +1,11 @@
 from django.contrib import admin
 from django.urls import path
 from .views import SaleOrBuyViewSet, ServiceViewSet, OperationViewSet, ProductViewSet, ClientViewSet, StockViewSet, SummaryViewSet
-
-
-
+from rest_framework.authtoken import views
 
 urlpatterns = [
+    path('auth/',views.obtain_auth_token, name='api-auth-token'),
+
     path('salebuy/<int:pk>',SaleOrBuyViewSet.as_view(), name='api-salebuy'),
     path('salebuy/',SaleOrBuyViewSet.as_view(), name='api-salebuy'),
 

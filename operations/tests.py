@@ -63,3 +63,36 @@ class TestModelClient(TestCase):
         expected = '2019-05-04'
         result = self.client.birth
         self.assertEqual(expected, result)
+
+
+class TestModelStock(TestCase):
+    def setUp(self):
+        self.product = Product.objects.create(
+                                        name='test_product_name', 
+                                        brand='test_product_brand',
+                                        unit='test_product_unit'
+                                    )
+        self.stock = Stock.objects.create(
+                                        product    = self.product,
+                                        qtd        = 10,
+                                        sale_price = 12
+                                    )
+
+    ##TESTING PARAMETERS
+    def test_str_stock_must_be_return_test_stock_name(self):
+        expected = 'test_product_name'
+        result = str(self.stock)
+        self.assertEqual(expected, result)
+    
+    # Fix business rules
+    def test_qtd_stock_must_be_return_test_stock_qtd(self):
+        expected = 10
+        result = self.stock.qtd
+        self.assertEqual(expected, result)
+    
+    def test_sale_price_stock_must_be_return_test_stock_sale_price(self):
+        expected = 12
+        result = self.stock.sale_price
+        self.assertEqual(expected, result)
+    
+    

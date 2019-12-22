@@ -566,7 +566,7 @@ class SummaryViewSet(APIView):
         output ={
                     'present':{
                                 'pending':{
-                                        'credit':706,
+                                        'credit':87,
                                         'debt':850
                                 },
                                 'done':{

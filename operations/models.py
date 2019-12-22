@@ -29,8 +29,8 @@ class Client(models.Model):
         return self.name
 
 class Stock(models.Model):
-    product = models.OneToOneField(Product, on_delete=models.PROTECT)
-    qtd = models.IntegerField( default=0, validators=[ MinValueValidator(0)] )
+    product    = models.OneToOneField(Product, on_delete=models.PROTECT)
+    qtd        = models.IntegerField( default=0, validators=[ MinValueValidator(0)] )
     sale_price = models.DecimalField(max_digits=8, decimal_places=2)
 
     def __str__(self):
