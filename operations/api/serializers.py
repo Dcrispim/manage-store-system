@@ -71,3 +71,10 @@ class OperationSerializer(serializers.ModelSerializer):
         model = Operation
         fields = '__all__'
 
+    def validate(self, data):
+        try:
+            if float(data['debt'])<0:
+                raise serializers.ValidationError("Debt Shoud be positive")
+            return data
+        except ValueError:
+            raise serializers.ValidationError("Debt Shoud a Number")

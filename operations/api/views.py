@@ -13,6 +13,7 @@ from .serializers import (
                             StockSerializer
                         )
 
+from .controler import valid_keys, validate_cart
 
 import json
 
@@ -71,52 +72,14 @@ class SaleOrBuyViewSet(APIView):
 
         return Response(serializer.data)
     
+    @valid_keys(SaleOrBuySerializer().fields, ['id', 'amount'])
+    @validate_cart('cart_sb', mode=1)
     def post(self, request, *args):
-        def validate(data):
-            msg = []
-            try:
-                client =  data['client']
-                mode = data['mode']
-                status = data['status']
-                date = data['date']
-                off = data['off']
-                cart = data['cart_sb']
-
-                if len(cart)<=0:
-                    msg.append('Empty Cart')
-                    return False, msg  
-                tot = 0
-                
-                try:
-                    
-                    for item in cart:
-                        StockItem = Stock.objects.filter(product=item['product'])[0]
-                        tot += StockItem.sale_price*item['qtd']
-
-                        if mode == 0 and StockItem.qtd<item['qtd']:
-                            msg.append('Insufficient Sotck ')
-                            return False, msg
-                        
-                        if mode == 1:
-                            item['price']
-                        
-                except Exception as err:
-                    msg.append(f'{err}')
-                    return False, msg
-
-
-                return True,msg
-
-            except KeyError as err:
-                msg.append(f'Missing Key:{err}')
-                return False, msg
-
-
-
+        from .controler import validate_SaleBuy as validate
 
         salebuy = SalesOrBuy.objects.all()
         valid = validate(request.data)
-        if valid[0]:
+        if valid[0] or True:
             old_qtd = {}
             
             dt = request.data
@@ -128,6 +91,7 @@ class SaleOrBuyViewSet(APIView):
                                               off = dt['off'], amount = 0
                                               
                                             )
+            
             amount = 0
             for i in dt['cart_sb']:
                 product = Product.objects.filter(pk=i['product'])[0]
@@ -181,11 +145,11 @@ class SaleOrBuyViewSet(APIView):
                                           )
 
             output = SaleOrBuySerializer(item).data
-            output['response'] = {'status':200, 'msg':valid[1]}
+            output['response'] = {'status':200, 'msg':valid[1:]}
             return Response(output)
         else:
             output = request.data
-            output['response'] = {'status':400, 'msg':valid[1]}
+            output['response'] = {'status':400, 'msg':valid[1:]}
             return Response(output)
 
 
@@ -214,37 +178,7 @@ class ServiceViewSet(APIView):
     
     def post(self, request, *args):
         
-        def validate(data):
-            msg = []
-            try:
-                description= data['description']
-                client =  data['client']
-                labor = data['labor']
-                status = data['status']
-                date = data['date']
-                off = data['off']
-                cart = data['cart_s']
-                
-                try:
-                    
-                    for item in cart:
-                        StockItem = Stock.objects.filter(product=item['product'])[0]
-                        if StockItem.qtd<item['qtd']:
-                            msg.append(f'Insufficient Sotck: {item["product"]}')
-                            return False, msg
-                        
-
-                
-                except Exception as err:
-                    msg.append(f'{err}')
-                    return False, msg
-
-
-                return True,['success']
-
-            except KeyError as err:
-                msg.append(f'Missing Key: {err}')
-                return False, msg
+        from .controler import validate_SaleBuy as validate
 
         dt = request.data
         valid = validate(request.data)
@@ -296,11 +230,11 @@ class ServiceViewSet(APIView):
                                           )
             
             output = ServiceSerializer(svc).data
-            output['response'] = {'status':200, 'msg':valid[1]}
+            output['response'] = {'status':200, 'msg':valid[1:]}
             return Response(output)
         else:
             output = request.data
-            output['response'] = {'status':400, 'msg':valid[1]}
+            output['response'] = {'status':400, 'msg':valid[1:]}
             return Response(output)
 
 
@@ -329,23 +263,8 @@ class OperationViewSet(APIView):
     
     def post(self, request, *args):
 
-        def validate(data):
-            msg = []
-            try:
-                description= data['description']
-                orig_dest =  data['orig_dest']
-                credit = data['credit']
-                status = data['status']
-                date = data['date']
-                debt = data['debt']
+        from .controler import validate_SaleBuy as validate
 
-
-                return True,['success']
-
-            except KeyError as err:
-                msg.append(f'Missing Key: {err}')
-                return False, msg
-        
         dt = request.data
         valid = validate(dt)
         if valid[0]:
@@ -360,11 +279,11 @@ class OperationViewSet(APIView):
                                           )
 
             output = request.data
-            output['response'] = {'status':200, 'msg':valid[1]}
+            output['response'] = {'status':200, 'msg':valid[1:]}
             return Response(output)
         else:
             output = request.data
-            output['response'] = {'status':400, 'msg':valid[1]}
+            output['response'] = {'status':400, 'msg':valid[1:]}
             return Response(output)
 
 class ProductViewSet(APIView):
@@ -372,24 +291,6 @@ class ProductViewSet(APIView):
     queryset = Service.objects.all()
 
     lookup_field = 'pk'
-    def validate(self, data):
-            msg = []
-            try:
-                name= data['name'].upper()
-                brand =  data['brand'].upper()
-                unit = data['unit'].upper()
-
-                if len(Product.objects.filter(name=name, brand=brand))>0:
-                    msg.append('Product Already registered')
-                    return False, msg
-
-                return True,['success']
-
-            except KeyError as err:
-                msg.append(f'Missing Key: {err}')
-                return False, msg
-            
-
 
     def get(self, request, pk=None):
         
@@ -405,46 +306,40 @@ class ProductViewSet(APIView):
 
         
         return Response(serializer.data)
-    
+    @valid_keys(ProductSerializer().fields, ['id'])
     def post(self, request, *args):
         
         
         dt = request.data
-        valid = self.validate(dt)
-        if valid[0]:
             
-            prod  = Product.objects.create(
-                                            name=dt['name'].upper(),
-                                            brand=dt['brand'].upper(),
-                                            unit=dt['unit'].upper(),
-                                          )
-
-            stock = Stock.objects.create(
-                                            product=prod,
-                                            qtd = 0, 
-                                            sale_price=0,
-
+        prod  = Product.objects.create(
+                                        name=dt['name'].upper(),
+                                        brand=dt['brand'].upper(),
+                                        unit=dt['unit'].upper(),
                                         )
 
-            output = ProductSerializer(prod).data
-            
-            output['response'] = {'status':200, 'msg':valid[1]}
-            return Response(output)
-        else:
-            output = request.data
-            output['response'] = {'status':400, 'msg':valid[1]}
-            return Response(output)
+        stock = Stock.objects.create(
+                                        product=prod,
+                                        qtd = 0, 
+                                        sale_price=0,
+
+                                    )
+
+        output = ProductSerializer(prod).data
+        
+        output['response'] = {'status':200, 'msg':'Success'}
+        print('Request Feita')
+        return Response(output)
 
 
+    @valid_keys(ProductSerializer().fields, ['id'])
     def put(self, request, pk):
-        valid = self.validate(request.data)
         dt = request.data
-        if valid[0]:
-            Product.objects.filter(pk=pk).update(
-                                                    name=dt['name'],
-                                                    brand=dt['brand'],
-                                                    unit=dt['unit'],
-            )
+        Product.objects.filter(pk=pk).update(
+                                                name=dt['name'],
+                                                brand=dt['brand'],
+                                                unit=dt['unit'],
+        )
 
 class ClientViewSet(APIView):
     erializer_class = ServiceSerializer
@@ -497,11 +392,11 @@ class ClientViewSet(APIView):
                                           )
 
             output = ClientSerializer(client).data
-            output['response'] = {'status':200, 'msg':valid[1]}
+            output['response'] = {'status':200, 'msg':valid[1:]}
             return Response(output)
         else:
             output = request.data
-            output['response'] = {'status':400, 'msg':valid[1]}
+            output['response'] = {'status':400, 'msg':valid[1:]}
             return Response(output)
 
 

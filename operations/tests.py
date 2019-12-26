@@ -1,13 +1,16 @@
 from django.test import TestCase
 from .models import *
+from manageStore.settings import DEBUG
+import requests
+import json
 
 # Create your tests here.
 
 class TestModelProduct(TestCase):
     def setUp(self):
         self.product = Product.objects.create(
-                                        name='test_product_name', 
-                                        brand='test_product_brand',
+                                        name="test_product_name", 
+                                        brand="test_product_brand",
                                         unit='test_product_unit'
                                     )
 
@@ -95,4 +98,78 @@ class TestModelStock(TestCase):
         result = self.stock.sale_price
         self.assertEqual(expected, result)
     
+
+
+class TestSaleBuyRequest(TestCase):
+    def setUp(self):
+        self.BASE_URL = 'http://localhost:8000/api/' if DEBUG else 'tech-pallas.herokuapp.com/'
+        token = json.loads(requests.post(f'{self.BASE_URL}auth/',
+                            data={
+                                    "username":"dcosta", 
+                                    "password":"1234"}
+                            ).text)['token'] 
+        self.headers={"Authorization":f"token {token}"}
+        a = {
+                "id":14,
+                "name":"PRODUCT NAME",
+                "brand":"PRODUCT BRAND",
+                "unit":"PRODUCT UNIT ",
+                "response":{
+                                "status":200,
+                                "msg":"Success"}
+                                }
+        
+    def test_create_products(self):
+        self.product_1 = json.loads(requests.post(  f'{self.BASE_URL}product/', 
+                                    data={
+                                            "name":"_TEST_PRODUCT NAME",
+                                            "brand":"_TEST_PRODUCT BRAND",
+                                            "unit":"_TEST_PRODUCT UNIT"},
+                                    headers=self.headers
+                                ).text)
+        
+        self.product_2 = json.loads(requests.post(  f'{self.BASE_URL}product/', 
+                                    data={
+                                            "name":"_TEST_PRODUCT NAME2",
+                                            "brand":"_TEST_PRODUCT BRAND2",
+                                            "unit":"_TEST_PRODUCT UNIT2"},
+                                    headers=self.headers
+                                ).text)
+        expected_1 = {
+                    "name":"_TEST_PRODUCT NAME",
+                    "brand":"_TEST_PRODUCT BRAND",
+                    "unit":"_TEST_PRODUCT UNIT",
+                    "response":{
+                                    "status":200
+                                    }
+        }
+        result_1 = {
+                    "name":self.product_1["name"],
+                    "brand":self.product_1["brand"],
+                    "unit":self.product_1["unit"],
+                    "response":{
+                                    "status":self.product_1["response"]["status"]
+                                    }
+        }
+        expected_2 = {
+                    "name":"_TEST_PRODUCT NAME2",
+                    "brand":"_TEST_PRODUCT BRAND2",
+                    "unit":"_TEST_PRODUCT UNIT2",
+                    "response":{
+                                    "status":200
+                                }                         
+        }
+        result_2 = {
+                    "name": self.product_2["name"],
+                    "brand": self.product_2["brand"],
+                    "unit": self.product_2["unit"],
+                    "response":{
+                                    "status":self.product_2["response"]["status"]
+                                    }
+        } 
+        self.assertEqual(expected_1, result_1)
+        self.assertEqual(expected_2, result_2)
     
+
+            
+from .delete import *

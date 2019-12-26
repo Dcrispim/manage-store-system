@@ -20,7 +20,7 @@ urlpatterns = [
     path('addprod/', addProduct, name='addprod'),
     path('service/', service, name='service'),
     path('operation/', operation, name='operation'),
-
+    
 
 
 ]
