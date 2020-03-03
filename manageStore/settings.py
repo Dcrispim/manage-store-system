@@ -20,7 +20,7 @@ from dj_database_url import parse as dburl
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
+TEST_ON = True
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
@@ -31,8 +31,8 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = ['tech-pallas.herokuapp.com', 'localhost']
-
+#ALLOWED_HOSTS = ['tech-pallas.herokuapp.com', 'localhost','192.168.1.2']
+ALLOWED_HOSTS = []
 
 # Application definition
 
@@ -106,7 +106,7 @@ WSGI_APPLICATION = 'manageStore.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-default_dburl  = 'sqlite:///'+ os.path.join(BASE_DIR,'db.sqlite3')
+default_dburl  = 'sqlite:///'+ os.path.join(BASE_DIR,'db.sqlite3' )
 
 DATABASES = {'default': config('DATABASE_URL', default=default_dburl, cast=dburl)}
 
@@ -158,3 +158,4 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/accounts/login'
 
 CORS_ORIGIN_ALLOW_ALL = True
+

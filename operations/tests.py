@@ -169,7 +169,3 @@ class TestSaleBuyRequest(TestCase):
         } 
         self.assertEqual(expected_1, result_1)
         self.assertEqual(expected_2, result_2)
-    
-
-            
-from .delete import *
